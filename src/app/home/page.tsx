@@ -1,10 +1,36 @@
 'use client'
-import { ConnectButton, WalletButton } from '@rainbow-me/rainbowkit'
+import { ConnectButton } from '@rainbow-me/rainbowkit'
 // import { Wallet } from 'lucide-react' // 添加钱包图标
 import { FaDice } from "react-icons/fa";
-import ConnectIPFS from '@/components/ConnectIPFS';
+import UploadButtonOfIPFS from '@/components/UploadButtonOfIPFS';
+import NFTList from '@/components/NFTList';
+import { useWriteContract, useChainId, useSimulateContract } from 'wagmi'
+import mahjongNFTAbi from '@/abi/mahjongNFT'
+import { parseEther } from 'viem';
 
 export default function home() {
+    const chainId = useChainId()
+    const { data } = useSimulateContract({
+        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+        abi: mahjongNFTAbi.abi,
+        chainId,
+        functionName: "mint",
+        value: parseEther('0.001'),
+    })
+    const { writeContract } = useWriteContract()
+
+    const handleUploadIPFSSuccess = () => {
+        // console.log("data", data?.request)
+        data?.request && writeContract(data.request, {
+            onSuccess: (data) => {
+                console.log("mint success", data)
+            },
+            onError: (err) => {
+                console.log("mint error", err)
+            }
+        })
+    }
+
     return (
         <div className="min-h-screen bg-gradient-to-b from-black via-purple-900 to-blue-800">
             <header className="p-4 flex justify-between">
@@ -30,7 +56,8 @@ export default function home() {
             </header>
             <main className="container mx-auto p-4">
                 {/* 这里可以添加您的主要内容 */}
-                <ConnectIPFS />
+                <UploadButtonOfIPFS onSuccess={handleUploadIPFSSuccess} />
+                <NFTList />
             </main>
         </div>
     )
