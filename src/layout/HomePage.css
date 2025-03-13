@@ -1,0 +1,139 @@
+.home-container {
+  display: flex;
+  min-height: 100vh;
+  width: 100%;
+}
+
+/* 左侧区域样式 */
+.left-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background-color: #1a1a2e;
+  color: white;
+  background-image: url('/images/mahjong-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.left-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.left-content {
+  position: relative;
+  z-index: 1;
+  max-width: 600px;
+  text-align: center;
+}
+
+.main-title {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.sub-title {
+  font-size: 1.5rem;
+  font-weight: normal;
+  margin-bottom: 2rem;
+}
+
+.description {
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+}
+
+/* 右侧区域样式 */
+.right-section {
+  width: 40%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+  background-color: #f8f9fa;
+}
+
+.login-container {
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.login-title {
+  font-size: 2rem;
+  color: #1a1a2e;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.login-description {
+  font-size: 1rem;
+  color: #4a4a4a;
+  margin-bottom: 2rem;
+  line-height: 1.5;
+}
+
+.connect-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.8rem 2rem;
+  font-size: 1.1rem;
+  background-color: #1a1a2e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin: 0 auto;
+}
+
+.connect-button:hover {
+  background-color: #16213e;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.wallet-icon {
+  margin-right: 10px;
+  font-size: 1.2rem;
+}
+
+.wallet-support-text {
+  font-size: 0.9rem;
+  color: #6c757d;
+  margin-top: 2rem;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .home-container {
+    flex-direction: column;
+  }
+  
+  .right-section {
+    width: 100%;
+  }
+  
+  .main-title {
+    font-size: 2.5rem;
+  }
+  
+  .sub-title {
+    font-size: 1.2rem;
+  }
+}
