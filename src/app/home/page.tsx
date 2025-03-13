@@ -2,13 +2,14 @@
 import { ConnectButton, WalletButton } from '@rainbow-me/rainbowkit'
 // import { Wallet } from 'lucide-react' // 添加钱包图标
 import { FaDice } from "react-icons/fa";
+import ConnectIPFS from '@/components/ConnectIPFS';
 
 export default function home() {
     return (
         <div className="min-h-screen bg-gradient-to-b from-black via-purple-900 to-blue-800">
             <header className="p-4 flex justify-between">
                 <div className='text-white flex gap-4 items-center'>
-                    <FaDice className='md:text-3xl text-2xl animate-spin'/>
+                    <FaDice className='md:text-3xl text-2xl animate-spin' />
                     <span className='font-semibold text-xl md:text-2xl'>Mahjong World</span>
                 </div>
                 <div>
@@ -29,6 +30,7 @@ export default function home() {
             </header>
             <main className="container mx-auto p-4">
                 {/* 这里可以添加您的主要内容 */}
+                <ConnectIPFS />
             </main>
         </div>
     )
