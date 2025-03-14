@@ -1,4 +1,5 @@
 import { AddResult, create, } from 'kubo-rpc-client';
+import { NFTItemProps } from '../../next-env';
 // 连接到本地 IPFS 节点的 API 端口（默认 5001）
 const ipfs = create({
   url: process.env.NEXT_PUBLIC_IPFS_API_URL || '',
@@ -23,27 +24,12 @@ export async function uploadFile(fileBlob: BlobPart[], fileName: string): Promis
 }
 
 /**
- * 上传 metasdata
- * @param name 名称
- * @param description  描述
- * @param imageUrl 
- * @param attributes 
+ * 上传NFT元数据
+ * @param config <NFTItemProps>
  * @returns 
  */
-export async function uploadMetadata(
-  name: string,
-  description: string,
-  imageUrl: string,
-  attributes?: Array<{ trait_type: string; value: string | number }>
-): Promise<AddResult> {
-  const metadata = {
-    name,
-    description,
-    image: imageUrl, // IPFS URL of the image
-    attributes: attributes || []
-  };
-
-  const metadataBuffer = Buffer.from(JSON.stringify(metadata));
+export async function uploadMetadata(config: NFTItemProps): Promise<AddResult> {
+  const metadataBuffer = Buffer.from(JSON.stringify(config));
   const result = await ipfs.add(metadataBuffer);
   return result;
 }

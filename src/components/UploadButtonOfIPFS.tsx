@@ -1,47 +1,55 @@
 'use client'
-import { uploadFile, uploadMetadata } from "@/utils/ipfs"
-import { useRef } from "react"
+import { useWriteContract, useChainId, useSimulateContract } from 'wagmi'
+import mahjongNFTAbi from '@/abi/mahjongNFT'
+import { parseEther } from 'viem';
+import { useEffect, useState, memo } from 'react';
+import CreateNFTForm from '@/components/CreateNFTForm';
 
 interface UploadButtonOfIPFSProps {
     onSuccess: (uri: string) => void
 }
 
 
-function UploadButtonOfIPFS({ onSuccess }: UploadButtonOfIPFSProps) {
-    const fileInputRef = useRef<HTMLInputElement>(null)
+function UploadButtonOfIPFS() {
+    const chainId = useChainId()
+    const { writeContract, } = useWriteContract()
+    const [ipfsPath, setIpfsPath] = useState<string>('')
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
+    const { data: simulateData } = useSimulateContract({
+        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+        abi: mahjongNFTAbi.abi,
+        chainId,
+        functionName: "mint",
+        args: [ipfsPath],
+        value: parseEther('0.001'),
+        enabled: !!ipfsPath, // 只有当 ipfsPath 存在时才执行
+    })
 
-    const handleUpload = async () => {
-        fileInputRef.current?.click()
-    }
-
-    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        try {
-            const file = event.target.files?.[0]
-            if (file) {
-                console.log(file, "file")
-                const { path } = await uploadFile([file], file.name);
-                const { path: metadataCid } = await uploadMetadata(file.name, "test image", `${process.env.NEXT_PUBLIC_IPFS_Gateway}/${path}`);
-                if (metadataCid) {
-                    console.log("上传到ipfs成功! 开始上传到合约")
-                    onSuccess(metadataCid);
+    // 上传成功后调用, 铸造NFT  
+    const handleUploadIPFSSuccess = (path: string) => {
+        setIpfsPath(path)
+        if (simulateData?.request) {
+            simulateData.request.args = [path];
+            writeContract(simulateData.request, {
+                onSuccess: (data) => {
+                    console.log("mint success", data)
+                    setIpfsPath('') // 重置 ipfsPath
+                },
+                onError: (err) => {
+                    console.log("mint error", err)
+                    setIpfsPath('') // 重置 ipfsPath
                 }
-            }
-        } catch (error) {
-            console.error("upload error ", error)
+            })
         }
     }
 
     return <div>
-        <input
-            type="file"
-            ref={fileInputRef}
-            className="hidden"
-            onChange={handleFileChange}
-        />
-        <button onClick={handleUpload} className="font-bold min-w-24 border bg-amber-300 p-2 rounded-ms cursor-pointer text-blue-950">
-            上传
+        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer" onClick={() => setIsModalOpen(true)}>
+            Mint NFT
         </button>
+        <CreateNFTForm open={isModalOpen}
+            onClose={() => setIsModalOpen(false)} onSuccess={handleUploadIPFSSuccess} />
     </div>
 }
 

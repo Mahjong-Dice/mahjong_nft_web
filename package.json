@@ -10,8 +10,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.6.1",
     "@rainbow-me/rainbowkit": "^2.2.4",
     "@tanstack/react-query": "^5.67.3",
+    "antd": "^5.24.3",
     "kubo-rpc-client": "^5.1.0",
     "next": "15.2.2",
     "react": "^19.0.0",

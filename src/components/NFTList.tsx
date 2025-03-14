@@ -21,7 +21,7 @@ function NFTList() {
         abi: mahjongNFTAbi.abi,
         chainId,
         functionName: "getOwnedCIDs",
-        args: [address],
+        args: [address as `0x${string}`] as const,
     })
     const fetchMetadata = async (cid: string) => {
         try {
@@ -44,6 +44,7 @@ function NFTList() {
         // 为每个 CID 创建单独的获取过程
         data.forEach(async (cid, index) => {
             try {
+                if(!cid) return;
                 const metadata = await fetchMetadata(cid)
                 if (metadata) {
                     setNftList(prev => [...prev, metadata])
@@ -59,10 +60,14 @@ function NFTList() {
         })
     }, [data])
 
+    if(isError) {
+        return <div>Error loading NFTs</div>
+    }
     return (
         <div className="nft-list-container">
             {/* 渲染 NFT 列表 */}
-            <div className="grid grid-rows-3 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
+            <h1 className='text-white text-2xl font-bold'>我的NFT</h1>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
                 {nftList.map((nft, index) => (
                     <NFTItem key={index} {...nft} />
                 ))}
