@@ -1,5 +1,14 @@
 @import "tailwindcss";
 
+@layer utilities {
+  .custom-scrollbar {
+    @apply [&::-webkit-scrollbar]:w-2 
+           [&::-webkit-scrollbar-track]:bg-transparent 
+           [&::-webkit-scrollbar-thumb]:bg-purple-500/50 
+           [&::-webkit-scrollbar-thumb]:rounded-full 
+           hover:[&::-webkit-scrollbar-thumb]:bg-purple-500;
+  }
+}
 
 
 html,

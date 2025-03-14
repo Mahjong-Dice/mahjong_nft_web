@@ -1,5 +1,5 @@
 'use client'
-import { uploadFile } from "@/utils/ipfs"
+import { uploadFile, uploadMetadata } from "@/utils/ipfs"
 import { useRef } from "react"
 
 interface UploadButtonOfIPFSProps {
@@ -16,14 +16,19 @@ function UploadButtonOfIPFS({ onSuccess }: UploadButtonOfIPFSProps) {
     }
 
     const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-        const file = event.target.files?.[0]
-        if (file) {
-            console.log(file, "file")
-            const { path } = await uploadFile([file], file.name);
-            if (path) {
-                console.log("上传到ipfs成功! 开始上传到合约")
-                onSuccess(path);
+        try {
+            const file = event.target.files?.[0]
+            if (file) {
+                console.log(file, "file")
+                const { path } = await uploadFile([file], file.name);
+                const { path: metadataCid } = await uploadMetadata(file.name, "test image", `${process.env.NEXT_PUBLIC_IPFS_Gateway}/${path}`);
+                if (metadataCid) {
+                    console.log("上传到ipfs成功! 开始上传到合约")
+                    onSuccess(metadataCid);
+                }
             }
+        } catch (error) {
+            console.error("upload error ", error)
         }
     }
 
