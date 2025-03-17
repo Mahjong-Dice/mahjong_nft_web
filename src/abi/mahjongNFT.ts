@@ -125,32 +125,6 @@ export default {
         },
         {
             "type": "function",
-            "name": "mahjongCount",
-            "inputs": [],
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256",
-                    "internalType": "uint256"
-                }
-            ],
-            "stateMutability": "view"
-        },
-        {
-            "type": "function",
-            "name": "maxSupply",
-            "inputs": [],
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256",
-                    "internalType": "uint256"
-                }
-            ],
-            "stateMutability": "view"
-        },
-        {
-            "type": "function",
             "name": "mint",
             "inputs": [
                 {
@@ -283,19 +257,6 @@ export default {
             ],
             "outputs": [],
             "stateMutability": "nonpayable"
-        },
-        {
-            "type": "function",
-            "name": "senderCountLimit",
-            "inputs": [],
-            "outputs": [
-                {
-                    "name": "",
-                    "type": "uint256",
-                    "internalType": "uint256"
-                }
-            ],
-            "stateMutability": "view"
         },
         {
             "type": "function",
@@ -587,6 +548,31 @@ export default {
                     "type": "uint256",
                     "indexed": false,
                     "internalType": "uint256"
+                }
+            ],
+            "anonymous": false
+        },
+        {
+            "type": "event",
+            "name": "NFTMinted",
+            "inputs": [
+                {
+                    "name": "minter",
+                    "type": "address",
+                    "indexed": true,
+                    "internalType": "address"
+                },
+                {
+                    "name": "tokenId",
+                    "type": "uint256",
+                    "indexed": true,
+                    "internalType": "uint256"
+                },
+                {
+                    "name": "tokenURI",
+                    "type": "string",
+                    "indexed": false,
+                    "internalType": "string"
                 }
             ],
             "anonymous": false

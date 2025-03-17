@@ -15,8 +15,15 @@ input NFTCreateInput {
   creator: String!
 }
 
+input NFTFilterInput {
+  tokenId: String
+  contractAddress: String
+  owner: String
+  creator: String
+}
+
 type Query {
-  nfts: [NFT!]!
+  nfts(filter: NFTFilterInput): [NFT!]!
   nft(id: ID!): NFT
 }
 

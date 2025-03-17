@@ -6,10 +6,18 @@ import { uploadFile, uploadMetadata } from "@/utils/ipfs";
 import type { UploadFile } from 'antd/es/upload/interface';
 import type { RcFile } from 'antd/es/upload';
 
+export type Metadata = {
+    name: any;
+    description: any;
+    image: string;
+    attributes: never[];
+    metadataCid: string;
+}
+
 interface CreateNFTFormProps {
     open: boolean;
     onClose: () => void;
-    onSuccess: (metadataUri: string) => void;
+    onSuccess: (metadataUri: Metadata) => void;
 }
 
 const CreateNFTForm = ({ open, onClose, onSuccess }: CreateNFTFormProps) => {
@@ -45,23 +53,20 @@ const CreateNFTForm = ({ open, onClose, onSuccess }: CreateNFTFormProps) => {
             const file = fileList[0].originFileObj as File;
             const { path: imagePath } = await uploadFile([file], file.name);
             const imageUrl = `${process.env.NEXT_PUBLIC_IPFS_Gateway}/${imagePath}`;
-            console.log("imageUrl", imageUrl)
             const metadata = {
                 name: values.name,
                 description: values.description,
                 image: imageUrl,
-                attributes: [
-                    {
-                        trait_type: "Price",
-                        value: values.price
-                    }
-                ]
+                attributes: []
             };
 
             const { path: metadataCid } = await uploadMetadata(metadata);
 
             message.success('NFT 元数据上传成功！');
-            onSuccess(metadataCid);
+            onSuccess({
+                ...metadata,
+                metadataCid
+            });
 
             handleCancel()
         } catch (error) {
@@ -133,7 +138,7 @@ const CreateNFTForm = ({ open, onClose, onSuccess }: CreateNFTFormProps) => {
                     />
                 </Form.Item>
 
-                <Form.Item
+                {/* <Form.Item
                     label="价格 (ETH)"
                     name="price"
                     rules={[{ required: true, message: '请输入 NFT 价格' }]}
@@ -144,7 +149,7 @@ const CreateNFTForm = ({ open, onClose, onSuccess }: CreateNFTFormProps) => {
                         placeholder="设置 NFT 价格"
                         style={{ width: '100%' }}
                     />
-                </Form.Item>
+                </Form.Item> */}
 
                 <Form.Item>
                     <Button

@@ -1,11 +1,11 @@
 import prisma from '@/lib/prisma'
-import { create } from 'domain';
 import type { INFTCreateRequest } from '@/app/api/nfts/interface'
 
 export const resolvers = {
     Query: {
-        nfts: async () => {
-            return await prisma.nFT.findMany()
+        nfts: async (_: any, { filter }: any) => {
+            const where = filter || {};
+            return await prisma.nFT.findMany({where})
         },
         nft: async (_: any, { id }: { id: string }) => {
             return await prisma.nFT.findUnique({
