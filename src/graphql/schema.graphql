@@ -1,0 +1,25 @@
+type NFT {
+  id: ID!
+  tokenId: String!
+  contractAddress: String!
+  metadata: String!
+  owner: String!
+  creator: String!
+}
+
+input NFTCreateInput {
+  tokenId: String!
+  contractAddress: String!
+  metadata: String!
+  owner: String!
+  creator: String!
+}
+
+type Query {
+  nfts: [NFT!]!
+  nft(id: ID!): NFT
+}
+
+type Mutation {
+  createNFT(input: NFTCreateInput!): NFT!
+}
