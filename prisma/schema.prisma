@@ -1,0 +1,48 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model NFT {
+  id          String   @id @default(uuid())
+  tokenId     String   @unique
+  contractAddress String
+  metadata    Json     // 存储符合 OpenSea 标准的元数据
+  owner       String   // 当前拥有者地址
+  creator     String   // 创建者地址
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  listings    Listing[]
+  transactions Transaction[]
+}
+
+model Listing {
+  id          String   @id @default(uuid())
+  nft         NFT      @relation(fields: [nftId], references: [id])
+  nftId       String
+  price       Float
+  seller      String   // 卖家地址
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Transaction {
+  id          String   @id @default(uuid())
+  nft         NFT      @relation(fields: [nftId], references: [id])
+  nftId       String
+  fromAddress String   // 卖家地址
+  toAddress   String   // 买家地址
+  price       Float
+  timestamp   DateTime @default(now())
+}
