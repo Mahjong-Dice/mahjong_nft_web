@@ -27,3 +27,12 @@ npx prisma migrate dev --name init
 # 4. 生成 Prisma Client
 npx prisma generate
 ```
+
+## PostgreSQL
+
+## Garaphql
+1. 安装 
+```sh   
+npm install @apollo/server graphql @as-integrations/next
+npm install prisma @prisma/client  # 若未安装
+```

@@ -7,7 +7,7 @@ export interface NFTItemProps {
     attributes?: { trait_type: string; value: string }[];
 }
 
-function NFTItem({ image, name, description, attributes }: NFTItemProps) {
+function NFTItem({ image, name, description }: NFTItemProps) {
     return (
         <div className="group cursor-pointer relative overflow-hidden rounded-xl bg-white/10 p-3 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
             <div className="aspect-square w-full max-w-[300px] mx-auto overflow-hidden rounded-lg">

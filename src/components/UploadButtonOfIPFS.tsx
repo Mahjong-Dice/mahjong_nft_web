@@ -2,18 +2,12 @@
 import { useWriteContract, useChainId, useSimulateContract, useAccount } from 'wagmi'
 import mahjongNFTAbi from '@/abi/mahjongNFT'
 import { parseEther } from 'viem';
-import { useEffect, useState, memo } from 'react';
+import { memo, useState } from 'react';
 import CreateNFTForm, { Metadata } from '@/components/CreateNFTForm';
 import { message } from 'antd'
 
 import { useMutation } from '@apollo/client'
 import { CREATE_NFT } from '@/lib/api'
-import { TbArrowAutofitWidth } from 'react-icons/tb';
-
-interface UploadButtonOfIPFSProps {
-    onSuccess: (uri: string) => void
-}
-
 
 function UploadButtonOfIPFS() {
     const account = useAccount()
@@ -24,15 +18,15 @@ function UploadButtonOfIPFS() {
     // 上传成功后调用, 铸造NFT  
     const [createNFT] = useMutation(CREATE_NFT);
 
-    const { data: simulateData } = useSimulateContract({
-        address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
-        abi: mahjongNFTAbi.abi,
-        chainId,
-        functionName: "mint",
-        value: parseEther('0.001'),
-        // @ts-ignore
-        enabled: true, // 只有当 ipfsPath 存在时才执行
-    })
+    // const { data: simulateData } = useSimulateContract({
+    //     address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+    //     abi: mahjongNFTAbi.abi,
+    //     chainId,
+    //     functionName: "mint",
+    //     value: parseEther('0.001'),
+    //     // @ts-ignore
+    //     enabled: true, // 只有当 ipfsPath 存在时才执行
+    // })
 
 
 
@@ -84,4 +78,4 @@ function UploadButtonOfIPFS() {
     </div>
 }
 
-export default UploadButtonOfIPFS;
+export default memo(UploadButtonOfIPFS);

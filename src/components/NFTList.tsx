@@ -4,7 +4,7 @@
  */
 
 import { memo, useEffect, useState } from 'react'
-import { useReadContract, useChainId, useAccount, useWatchContractEvent } from 'wagmi'
+import { useChainId, useAccount, useWatchContractEvent } from 'wagmi'
 // import mahjongNFTAbi from '@/abi/mahjongNFT'
 import NFTItem, { NFTItemProps } from './NFTItem'
 import { useQuery } from '@apollo/client'

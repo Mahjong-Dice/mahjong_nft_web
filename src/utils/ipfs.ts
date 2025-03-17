@@ -1,5 +1,5 @@
 import { AddResult, create, } from 'kubo-rpc-client';
-import { NFTItemProps } from '../../next-env';
+import { NFTItemProps } from '@/types';
 // 连接到本地 IPFS 节点的 API 端口（默认 5001）
 const ipfs = create({
   url: process.env.NEXT_PUBLIC_IPFS_API_URL || '',

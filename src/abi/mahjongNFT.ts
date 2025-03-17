@@ -1,4 +1,4 @@
-export default {
+const mahjongNFTAbi = {
     "abi": [
         {
             "type": "constructor",
@@ -774,3 +774,4 @@ export default {
         }
     ] as const,
 }
+export default mahjongNFTAbi
