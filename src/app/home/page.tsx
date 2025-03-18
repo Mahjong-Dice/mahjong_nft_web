@@ -5,6 +5,7 @@ import { FaDice } from "react-icons/fa";
 import UploadButtonOfIPFS from "@/components/UploadButtonOfIPFS";
 import NFTList from "@/components/NFTList";
 import { memo } from "react";
+import SwitchTheme from "@/components/SwitchTheme";
 
 function home() {
   return (
@@ -36,6 +37,7 @@ function home() {
               }}
             />
           </div>
+          <SwitchTheme />
         </div>
       </header>
       <main className="container mx-auto p-4 overflow-auto flex-1 custom-scrollbar">

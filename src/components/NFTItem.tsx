@@ -28,7 +28,7 @@ function NFTItem({ nft }: { nft: I_NFT }) {
         <h3 className="text-lg font-semibold text-white text-truncate">
           {name}
         </h3>
-        <div className="text-sm text-gray-400 w-full">
+        <div className="text-sm text-gray-400 w-full dark:text-white">
           <div className="w-full text-truncate">
             简介: {description}
           </div>
