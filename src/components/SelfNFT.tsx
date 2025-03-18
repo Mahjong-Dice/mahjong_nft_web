@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Input, message, Modal } from "antd";
 
-import { useSignTypedData, useSendTransaction } from "wagmi";
+import { useSignTypedData, useWriteContract, useChainId, useWatchContractEvent } from "wagmi";
 import { parseEther } from "viem";
+import configAbi from '@/abi/mahjongNFT'
+import { config } from "@/wagmi";
 
 interface SelfNFTProps {
   name: string;
@@ -22,11 +24,24 @@ const SelfNFT: React.FC<SelfNFTProps> = ({ name, tokenId }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [price, setPrice] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { signTypedData } = useSignTypedData();
+  const { signTypedData, isSuccess } = useSignTypedData();
+  const { writeContract, data, error } = useWriteContract({ config });
+  const chainId = useChainId()
   // 打开上架模态框
   const showListingModal = () => {
     setIsModalVisible(true);
   };
+
+  useWatchContractEvent({
+    address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`, // 合约地址
+    abi: configAbi.abi, // 合约ABI
+    eventName: "NFTListed",
+    chainId,
+    onLogs: (logs) => {
+      console.log("NFTListed Event =>", logs, isSuccess)
+
+    }
+  })
 
   // 处理上架操作
   const handleListing = async () => {
@@ -38,7 +53,7 @@ const SelfNFT: React.FC<SelfNFTProps> = ({ name, tokenId }) => {
     try {
       // 将ETH转换为wei
       const priceInWei = parseEther(price);
-      
+
       signTypedData(
         {
           types,
@@ -51,12 +66,21 @@ const SelfNFT: React.FC<SelfNFTProps> = ({ name, tokenId }) => {
           },
         },
         {
-          onSuccess: (data) => {
-            console.log("success")
-            message.success("签名成功");
-            console.log(data)
-            // setIsModalVisible(false);
-            // setPrice("");
+          onSuccess: async (data) => {
+            console.log("sign hash =>", data)
+            writeContract({
+              address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+              abi: configAbi.abi,
+              functionName: "listNFT",
+              args: [
+                process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+                [BigInt(tokenId)],
+                priceInWei,
+                BigInt(Math.floor(Date.now() / 1000) + 60 * 60),
+                data,
+              ],
+              gas: BigInt(500000),
+            });
           },
           onError: (error) => {
             console.log("error", error);
@@ -71,6 +95,18 @@ const SelfNFT: React.FC<SelfNFTProps> = ({ name, tokenId }) => {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (error) {
+      console.error(error)
+      return
+    }
+    if (data) {
+      console.log(data)
+    }
+  }, [data, error])
+
+
 
   return (
     <>

@@ -1,8 +1,8 @@
 "use client";
-import { useWriteContract, useAccount } from "wagmi";
+import { useWriteContract, useAccount, useWatchContractEvent } from "wagmi";
 import mahjongNFTAbi from "@/abi/mahjongNFT";
 import { parseEther } from "viem";
-import { memo, useState } from "react";
+import { memo, useRef, useState } from "react";
 import CreateNFTForm, { Metadata } from "@/components/CreateNFTForm";
 import { message } from "antd";
 
@@ -14,9 +14,35 @@ function UploadButtonOfIPFS() {
   // const chainId = useChainId()
   const { writeContract } = useWriteContract();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const metadataRef = useRef({})
 
   // 上传成功后调用, 铸造NFT
   const [createNFT] = useMutation(CREATE_NFT);
+
+  useWatchContractEvent({
+    address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+    abi: mahjongNFTAbi.abi,
+    eventName: "NFTMinted",
+    onLogs: async (logs) => {
+      const { args: { tokenId } } = logs[0]
+
+      if (metadataRef.current && tokenId) {
+        console.log("save mint info to db")
+        await createNFT({
+          variables: {
+            input: {
+              tokenId: tokenId.toString(),
+              contractAddress: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+              metadata: JSON.stringify(metadataRef.current),
+              owner: account.address,
+              creator: account.address,
+            },
+          },
+        });
+        message.success("mint success");
+      }
+    }
+  })
 
   // const { data: simulateData } = useSimulateContract({
   //     address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
@@ -30,6 +56,8 @@ function UploadButtonOfIPFS() {
 
   const handleUploadIPFSSuccess = (metadata: Metadata) => {
     const { metadataCid, ...nftMetadata } = metadata;
+
+    metadataRef.current = nftMetadata;
 
     // console.log("account", account.address, process.env.NEXT_PUBLIC_CONTRACT_ADDRESS)
     // 添加判断确保所有必要数据都存在
@@ -47,22 +75,6 @@ function UploadButtonOfIPFS() {
         value: parseEther("0.001"),
       },
       {
-        onSuccess: async (data) => {
-          console.log("mint success", data);
-          // 存储到数据库中
-          await createNFT({
-            variables: {
-              input: {
-                tokenId: data,
-                contractAddress: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-                metadata: JSON.stringify(nftMetadata),
-                owner: account.address,
-                creator: account.address,
-              },
-            },
-          });
-          message.success("mint success");
-        },
         onError: (err) => {
           console.log("mint error", err);
         },

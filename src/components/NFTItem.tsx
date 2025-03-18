@@ -19,6 +19,8 @@ function NFTItem({ nft }: { nft: I_NFT }) {
         <Image
           src={image}
           alt={name}
+          width={'100%'}
+          height={'100%'}
           className="w-full h-full object-cover scale-80 transition-transform duration-300 group-hover:scale-100"
         />
       </div>

@@ -5,7 +5,7 @@ export const resolvers = {
     Query: {
         nfts: async (_: any, { filter }: any) => {
             const where = filter || {};
-            return await prisma.nFT.findMany({where})
+            return await prisma.nFT.findMany({ where })
         },
         nft: async (_: any, { id }: { id: string }) => {
             return await prisma.nFT.findUnique({
@@ -20,6 +20,13 @@ export const resolvers = {
                     ...input
                 }
             })
-        }
+        },
+        deleteNFTs: async (_: any, { id }: { id: string }) => {
+            return await prisma.nFT.deleteMany({
+                where: {
+                    id
+                }
+            })
+        },
     }
 }

@@ -24,16 +24,7 @@ function NFTList() {
   //     functionName: "getOwnedCIDs",
   //     args: [address as `0x${string}`] as const,
   // })
-  useWatchContractEvent({
-    address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
-    abi: mahjongNFT.abi,
-    chainId,
-    eventName: "NFTMinted",
-    onLogs: (logs) => {
-      console.log("NFTMinted", logs);
-      refetch();
-    },
-  });
+  // 调用后端接口获取用户的 NFT 列表
   const {
     data,
     loading: isPending,
@@ -47,6 +38,18 @@ function NFTList() {
       },
     },
   });
+  // 监听 NFT 创建事件
+  useWatchContractEvent({
+    address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+    abi: mahjongNFT.abi,
+    chainId,
+    eventName: "NFTMinted",
+    onLogs: async (logs) => {
+      console.log("list => ", logs)
+      await refetch();
+    },
+  });
+
 
   //   const fetchMetadata = async (cid: string) => {
   //     try {

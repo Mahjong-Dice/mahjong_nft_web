@@ -22,6 +22,11 @@ input NFTFilterInput {
   creator: String
 }
 
+type DeleteNFTsResponse {
+  count: Int!
+}
+
+
 type Query {
   nfts(filter: NFTFilterInput): [NFT!]!
   nft(id: ID!): NFT
@@ -29,4 +34,5 @@ type Query {
 
 type Mutation {
   createNFT(input: NFTCreateInput!): NFT!
+  deleteNFTs(id: ID!): DeleteNFTsResponse!
 }
