@@ -82,6 +82,47 @@ const mahjongNFTAbi = {
         },
         {
             "type": "function",
+            "name": "getOrderHash",
+            "inputs": [
+                {
+                    "name": "order",
+                    "type": "tuple",
+                    "internalType": "struct MahjongNFT.Order",
+                    "components": [
+                        {
+                            "name": "contract_",
+                            "type": "address",
+                            "internalType": "address"
+                        },
+                        {
+                            "name": "tokenIds",
+                            "type": "uint256[]",
+                            "internalType": "uint256[]"
+                        },
+                        {
+                            "name": "price",
+                            "type": "uint256",
+                            "internalType": "uint256"
+                        },
+                        {
+                            "name": "expiry",
+                            "type": "uint256",
+                            "internalType": "uint256"
+                        }
+                    ]
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "bytes32",
+                    "internalType": "bytes32"
+                }
+            ],
+            "stateMutability": "pure"
+        },
+        {
+            "type": "function",
             "name": "getOwnedCIDs",
             "inputs": [
                 {
@@ -125,6 +166,39 @@ const mahjongNFTAbi = {
         },
         {
             "type": "function",
+            "name": "listNFT",
+            "inputs": [
+                {
+                    "name": "contract_",
+                    "type": "address",
+                    "internalType": "address"
+                },
+                {
+                    "name": "tokenIds",
+                    "type": "uint256[]",
+                    "internalType": "uint256[]"
+                },
+                {
+                    "name": "price",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                },
+                {
+                    "name": "expiry",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                },
+                {
+                    "name": "signature",
+                    "type": "bytes",
+                    "internalType": "bytes"
+                }
+            ],
+            "outputs": [],
+            "stateMutability": "nonpayable"
+        },
+        {
+            "type": "function",
             "name": "mint",
             "inputs": [
                 {
@@ -164,6 +238,25 @@ const mahjongNFTAbi = {
                     "name": "",
                     "type": "string",
                     "internalType": "string"
+                }
+            ],
+            "stateMutability": "view"
+        },
+        {
+            "type": "function",
+            "name": "orderStatus",
+            "inputs": [
+                {
+                    "name": "",
+                    "type": "bytes32",
+                    "internalType": "bytes32"
+                }
+            ],
+            "outputs": [
+                {
+                    "name": "",
+                    "type": "bool",
+                    "internalType": "bool"
                 }
             ],
             "stateMutability": "view"
@@ -554,6 +647,43 @@ const mahjongNFTAbi = {
         },
         {
             "type": "event",
+            "name": "NFTListed",
+            "inputs": [
+                {
+                    "name": "seller",
+                    "type": "address",
+                    "indexed": true,
+                    "internalType": "address"
+                },
+                {
+                    "name": "nftContract",
+                    "type": "address",
+                    "indexed": true,
+                    "internalType": "address"
+                },
+                {
+                    "name": "tokenId",
+                    "type": "uint256",
+                    "indexed": false,
+                    "internalType": "uint256"
+                },
+                {
+                    "name": "price",
+                    "type": "uint256",
+                    "indexed": false,
+                    "internalType": "uint256"
+                },
+                {
+                    "name": "expiry",
+                    "type": "uint256",
+                    "indexed": false,
+                    "internalType": "uint256"
+                }
+            ],
+            "anonymous": false
+        },
+        {
+            "type": "event",
             "name": "NFTMinted",
             "inputs": [
                 {
@@ -620,6 +750,33 @@ const mahjongNFTAbi = {
                 }
             ],
             "anonymous": false
+        },
+        {
+            "type": "error",
+            "name": "ECDSAInvalidSignature",
+            "inputs": []
+        },
+        {
+            "type": "error",
+            "name": "ECDSAInvalidSignatureLength",
+            "inputs": [
+                {
+                    "name": "length",
+                    "type": "uint256",
+                    "internalType": "uint256"
+                }
+            ]
+        },
+        {
+            "type": "error",
+            "name": "ECDSAInvalidSignatureS",
+            "inputs": [
+                {
+                    "name": "s",
+                    "type": "bytes32",
+                    "internalType": "bytes32"
+                }
+            ]
         },
         {
             "type": "error",
@@ -744,6 +901,11 @@ const mahjongNFTAbi = {
                     "internalType": "uint256"
                 }
             ]
+        },
+        {
+            "type": "error",
+            "name": "Expired",
+            "inputs": []
         },
         {
             "type": "error",
