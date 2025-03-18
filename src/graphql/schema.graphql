@@ -5,6 +5,7 @@ type NFT {
   metadata: String!
   owner: String!
   creator: String!
+  listings: [Listing!]!
 }
 
 input NFTCreateInput {
@@ -26,13 +27,40 @@ type DeleteNFTsResponse {
   count: Int!
 }
 
+type Listing {
+  id: ID!
+  nft: NFT!
+  nftId: String!
+  price: Float!
+  seller: String!
+  isActive: Boolean!
+  createdAt: String!
+  updatedAt: String!
+}
+
+input ListingCreateInput {
+  nftId: String!
+  price: Float!
+  seller: String!
+}
+
+input ListingFilterInput {
+  nftId: String
+  seller: String
+  isActive: Boolean
+}
 
 type Query {
   nfts(filter: NFTFilterInput): [NFT!]!
   nft(id: ID!): NFT
+  listings(filter: ListingFilterInput): [Listing!]!
+  listing(id: ID!): Listing
 }
 
 type Mutation {
   createNFT(input: NFTCreateInput!): NFT!
   deleteNFTs(id: ID!): DeleteNFTsResponse!
+  createListing(input: ListingCreateInput!): Listing!
+  updateListing(id: ID!, price: Float): Listing!
+  deactivateListing(id: ID!): Listing!
 }
