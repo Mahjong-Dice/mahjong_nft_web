@@ -1,23 +1,26 @@
-'use client'
-import { message, ConfigProvider } from 'antd';
-import { ReactNode, useEffect } from 'react';
-
+"use client";
+import { message, ConfigProvider, App } from "antd";
+import { ReactNode, useEffect } from "react";
 
 interface AntdProviderLayoutProps {
-    children: ReactNode;
+  children: ReactNode;
 }
 
 const AntdProviderLayout = ({ children }: AntdProviderLayoutProps) => {
-    const [messageApi, contextHolder] = message.useMessage();
+  const [messageApi, contextHolder] = message.useMessage();
 
-    useEffect(() => {
-        window.$message = messageApi;
-    }, [])
+  useEffect(() => {
+    window.$message = messageApi;
+  }, []);
 
-    return <ConfigProvider>
+  return (
+    <ConfigProvider>
+      <App>
         {contextHolder}
         {children}
-    </ConfigProvider>;
+      </App>
+    </ConfigProvider>
+  );
 };
 
 export default AntdProviderLayout;

@@ -8,8 +8,11 @@
            [&::-webkit-scrollbar-thumb]:rounded-full 
            hover:[&::-webkit-scrollbar-thumb]:bg-purple-500;
   }
-}
 
+  .text-truncate {
+    @apply overflow-ellipsis overflow-hidden whitespace-nowrap;
+  }
+}
 
 html,
 body {

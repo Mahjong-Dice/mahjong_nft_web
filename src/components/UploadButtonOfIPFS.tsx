@@ -14,7 +14,7 @@ function UploadButtonOfIPFS() {
   // const chainId = useChainId()
   const { writeContract } = useWriteContract();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const metadataRef = useRef({})
+  const metadataRef = useRef({});
 
   // 上传成功后调用, 铸造NFT
   const [createNFT] = useMutation(CREATE_NFT);
@@ -24,10 +24,12 @@ function UploadButtonOfIPFS() {
     abi: mahjongNFTAbi.abi,
     eventName: "NFTMinted",
     onLogs: async (logs) => {
-      const { args: { tokenId } } = logs[0]
-
+      const {
+        args: { tokenId },
+      } = logs[0];
+      console.log("NFTMinted", tokenId);
       if (metadataRef.current && tokenId) {
-        console.log("save mint info to db")
+        console.log("save mint info to db");
         await createNFT({
           variables: {
             input: {
@@ -39,10 +41,10 @@ function UploadButtonOfIPFS() {
             },
           },
         });
-        message.success("mint success");
+        window.$message.success("mint success");
       }
-    }
-  })
+    },
+  });
 
   // const { data: simulateData } = useSimulateContract({
   //     address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
@@ -75,8 +77,13 @@ function UploadButtonOfIPFS() {
         value: parseEther("0.001"),
       },
       {
+        onSuccess: () => {
+          console.log("mint success");
+          // window.$message.success("mint success");
+        },
         onError: (err) => {
           console.log("mint error", err);
+          window.$message.error(err.message);
         },
       }
     );

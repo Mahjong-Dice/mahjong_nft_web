@@ -15,15 +15,7 @@ function NFTList() {
   const { address } = useAccount();
   const chainId = useChainId();
   const [nftList, setNftList] = useState<I_NFT[]>([]);
-  // const [isLoading, setIsLoading] = useState(false)
-  // const { data, isError, isPending, refetch } = useReadContract({
-  //     // @ts-ignore
-  //     address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-  //     abi: mahjongNFTAbi.abi,
-  //     chainId,
-  //     functionName: "getOwnedCIDs",
-  //     args: [address as `0x${string}`] as const,
-  // })
+
   // 调用后端接口获取用户的 NFT 列表
   const {
     data,
@@ -44,12 +36,12 @@ function NFTList() {
     abi: mahjongNFT.abi,
     chainId,
     eventName: "NFTMinted",
-    onLogs: async (logs) => {
-      console.log("list => ", logs)
-      await refetch();
+    onLogs: () => {
+      setTimeout(async () => {
+        await refetch();
+      }, 1000);
     },
   });
-
 
   //   const fetchMetadata = async (cid: string) => {
   //     try {

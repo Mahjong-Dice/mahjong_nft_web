@@ -19,19 +19,27 @@ function NFTItem({ nft }: { nft: I_NFT }) {
         <Image
           src={image}
           alt={name}
-          width={'100%'}
-          height={'100%'}
+          width={"100%"}
+          height={"100%"}
           className="w-full h-full object-cover scale-80 transition-transform duration-300 group-hover:scale-100"
         />
       </div>
       <div className="mt-3 space-y-2">
-        <h3 className="text-lg font-semibold text-white">{name}</h3>
-        <p className="text-sm text-gray-400">简介 {description}</p>
+        <h3 className="text-lg font-semibold text-white text-truncate">
+          {name}
+        </h3>
+        <div className="text-sm text-gray-400 w-full overflow-hidden whitespace-nowrap overflow-ellipsis">
+          <div className="w-full text-truncate">
+            简介: {description}
+          </div>
+        </div>
         <div className="flex items-center justify-between">
-          {/* <span className="text-base font-medium text-green-400">{price} ETH</span> */}
+          {/* <span className="text-base font-medium text-green-400">{1} ETH</span> */}
 
-          <NFTDetailsModal nft={nft} />
-          <SelfNFT name={name} tokenId={nft.tokenId} />
+          <div>
+            <NFTDetailsModal nft={nft} />
+            <SelfNFT name={name} tokenId={nft.tokenId} />
+          </div>
         </div>
       </div>
     </div>

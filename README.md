@@ -13,7 +13,7 @@ pnpm dev
 # or
 bun dev
 ```
-
+## 运行之前先运行prisma
 ## prisma
 ```sh
 # 1. install
