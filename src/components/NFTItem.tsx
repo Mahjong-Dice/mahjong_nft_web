@@ -2,6 +2,7 @@ import { memo, useState } from "react";
 import { I_NFT } from "@/types";
 import { Button, Modal, Descriptions, Tooltip, message } from "antd";
 import { CopyOutlined } from "@ant-design/icons";
+// import Image from 'next/image';
 
 export interface NFTItemProps {
   image: string;
@@ -14,11 +15,11 @@ function NFTItem({ nft }: { nft: I_NFT }) {
   const { image, name, description } = nft.metadata;
   return (
     <div className="group cursor-pointer relative overflow-hidden rounded-xl bg-white/10 p-3 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-      <div className="aspect-square w-full max-w-[300px] mx-auto overflow-hidden rounded-lg">
+      <div className="aspect-square w-full max-w-[300px] mx-auto overflow-hidden rounded-lg relative">
         <img
           src={image}
           alt={name}
-          className="h-full w-full scale-80 object-cover transition-transform duration-300 group-hover:scale-100"
+          className="w-full h-full object-cover scale-80 transition-transform duration-300 group-hover:scale-100"
         />
       </div>
       <div className="mt-3 space-y-2">

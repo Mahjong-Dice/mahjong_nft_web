@@ -1,5 +1,5 @@
 'use client'
-import { useWriteContract, useChainId, useSimulateContract, useAccount } from 'wagmi'
+import { useWriteContract, useAccount } from 'wagmi'
 import mahjongNFTAbi from '@/abi/mahjongNFT'
 import { parseEther } from 'viem';
 import { memo, useState } from 'react';
@@ -11,7 +11,7 @@ import { CREATE_NFT } from '@/lib/api'
 
 function UploadButtonOfIPFS() {
     const account = useAccount()
-    const chainId = useChainId()
+    // const chainId = useChainId()
     const { writeContract, } = useWriteContract()
     const [isModalOpen, setIsModalOpen] = useState(false);
 
