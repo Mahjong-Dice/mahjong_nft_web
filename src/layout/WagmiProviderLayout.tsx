@@ -14,7 +14,7 @@ const client = new QueryClient();
 export default function WagmiProviderLayout({ children }: { children: React.ReactNode }) {
     return (
         <>
-            <WagmiProvider config={config} reconnectOnMount>
+            <WagmiProvider config={config}>
                 <QueryClientProvider client={client}>
                     <RainbowKitProvider theme={darkTheme()}>
                         {children}
