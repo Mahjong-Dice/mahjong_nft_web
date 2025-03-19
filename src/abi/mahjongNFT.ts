@@ -662,10 +662,10 @@ const mahjongNFTAbi = {
                     "internalType": "address"
                 },
                 {
-                    "name": "tokenId",
-                    "type": "uint256",
+                    "name": "tokenIds",
+                    "type": "uint256[]",
                     "indexed": false,
-                    "internalType": "uint256"
+                    "internalType": "uint256[]"
                 },
                 {
                     "name": "price",
@@ -719,6 +719,31 @@ const mahjongNFTAbi = {
                 },
                 {
                     "name": "newOwner",
+                    "type": "address",
+                    "indexed": true,
+                    "internalType": "address"
+                }
+            ],
+            "anonymous": false
+        },
+        {
+            "type": "event",
+            "name": "SignSigner",
+            "inputs": [
+                {
+                    "name": "sender",
+                    "type": "address",
+                    "indexed": true,
+                    "internalType": "address"
+                },
+                {
+                    "name": "signer",
+                    "type": "address",
+                    "indexed": true,
+                    "internalType": "address"
+                },
+                {
+                    "name": "nftOwner",
                     "type": "address",
                     "indexed": true,
                     "internalType": "address"

@@ -34,7 +34,6 @@ function NFTList() {
   useWatchContractEvent({
     address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
     abi: mahjongNFT.abi,
-    chainId,
     eventName: "NFTMinted",
     onLogs: () => {
       setTimeout(async () => {
@@ -43,16 +42,9 @@ function NFTList() {
     },
   });
 
-  //   const fetchMetadata = async (cid: string) => {
-  //     try {
-  //       const response = await fetch(`${ipfsGateway}/${cid}`);
-  //       const metadata = await response.json();
-  //       return { ...metadata, cid };
-  //     } catch (error) {
-  //       console.error("Error fetching metadata:", error);
-  //       return null;
-  //     }
-  //   };
+  useEffect(() => {
+    refetch();
+  }, [chainId])
 
   useEffect(() => {
     try {
