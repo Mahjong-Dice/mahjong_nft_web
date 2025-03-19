@@ -1,6 +1,8 @@
-import { useWriteContract } from "wagmi";
+import { useWaitForTransactionReceipt, useWriteContract } from "wagmi";
 import { message } from "antd";
 import mahjongNFTAbi from "@/abi/mahjongNFT";
+import { useEffect, useState } from "react";
+import { Log, parseEventLogs, Abi } from "viem";
 
 interface ContractWriteParams {
   address: `0x${string}`;
@@ -37,6 +39,46 @@ export const useContractWrite = () => {
   return { writeContractWithPromise };
 };
 
+export const useWriteContractGetLogs = <
+  TAbi extends Abi,
+  TEventName extends string = string,
+  TArgs = any
+>(
+  hash: `0x${string}` | undefined,
+  abi: TAbi,
+  event: TEventName
+) => {
+  const { data: receipt } = useWaitForTransactionReceipt({
+    hash,
+  });
+
+  type EventLog = {
+    eventName: string;
+    args: TArgs;
+    [key: string]: any;
+  };
+
+  const [logs, setLogs] = useState<EventLog[]>([]);
+
+  useEffect(() => {
+    if (receipt) {
+      const events = parseEventLogs({
+        abi,
+        logs: receipt?.logs,
+      });
+
+      const filteredEvents = events.filter(
+        (e) => e.eventName === (event as string)
+      ) as EventLog[];
+
+      setLogs(filteredEvents);
+    }
+  }, [receipt, abi, event]);
+
+  return {
+    logs,
+  };
+};
 /**
  * 授权NFT给合约
  * @returns approve 授权

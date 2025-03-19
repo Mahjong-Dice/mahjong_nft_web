@@ -15,7 +15,7 @@ import {
 } from "viem";
 import configAbi from "@/abi/mahjongNFT";
 import { config } from "@/wagmi";
-import { useApprove } from "@/hooks/useContractWrite";
+import { useApprove, useWriteContractGetLogs } from "@/hooks/useContractWrite";
 import { useFetchGraphQL } from "@/lib/api";
 
 interface SelfNFTProps {
@@ -43,30 +43,18 @@ const SelfNFT: React.FC<SelfNFTProps> = ({ name, tokenId, nftId }) => {
   const { writeContractAsync, data } = useWriteContract({
     config,
   });
-  const { data: receipt } = useWaitForTransactionReceipt({
-    hash: data,
-  });
+  const { logs } = useWriteContractGetLogs(data, configAbi.abi, "NFTListed");
+  useEffect(() => {
+    console.log("logs", logs);
+    const {
+      args: { seller, price },
+    } = logs[0];
+    if (seller && price) {
+      addListing(price, seller);
+    }
+  }, [logs]);
 
   const { signMessage } = useSignMessage();
-  useEffect(() => {
-    if (receipt) {
-      const events = parseEventLogs({
-        abi: configAbi.abi, // 必须包含事件定义的ABI
-        logs: receipt?.logs,
-      });
-      // 获取特定事件
-      const transferEvents = events.filter(
-        (event) => event.eventName === "NFTListed"
-      );
-      console.log("Transfer Events:", transferEvents);
-      const {
-        args: { seller, price },
-      } = transferEvents[0];
-      if (seller && price) {
-        addListing(price, seller);
-      }
-    }
-  }, [receipt]);
 
   const addListing = async (price: bigint, seller: `0x${string}`) => {
     const result = await createListing({
