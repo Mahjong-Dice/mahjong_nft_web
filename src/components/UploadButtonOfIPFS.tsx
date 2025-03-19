@@ -30,15 +30,18 @@ function UploadButtonOfIPFS() {
       console.log("NFTMinted", tokenId);
       if (metadataRef.current && tokenId) {
         console.log("save mint info to db");
-        await createNFT({
+        console.log(metadataRef.current, tokenId.toString());
+        const input = {
+          tokenId: tokenId.toString(),
+          contractAddress: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
+          metadata: JSON.stringify(metadataRef.current),
+          owner: account.address,
+          creator: account.address,
+        };
+        console.log("input", input)
+        createNFT({
           variables: {
-            input: {
-              tokenId: tokenId.toString(),
-              contractAddress: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
-              metadata: JSON.stringify(metadataRef.current),
-              owner: account.address,
-              creator: account.address,
-            },
+            input,
           },
         });
         window.$message.success("mint success");

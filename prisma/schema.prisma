@@ -15,7 +15,7 @@ datasource db {
 
 model NFT {
   id          String   @id @default(uuid())
-  tokenId     String   @unique
+  tokenId     String
   contractAddress String
   metadata    Json     // 存储符合 OpenSea 标准的元数据
   owner       String   // 当前拥有者地址
@@ -24,6 +24,8 @@ model NFT {
   updatedAt   DateTime @updatedAt
   listings    Listing[]
   transactions Transaction[]
+
+  @@unique([tokenId, contractAddress])
 }
 
 model Listing {
