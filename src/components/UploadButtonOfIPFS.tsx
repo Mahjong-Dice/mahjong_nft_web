@@ -1,5 +1,5 @@
 "use client";
-import { useWriteContract, useAccount, useWatchContractEvent } from "wagmi";
+import { useAccount, useWatchContractEvent } from "wagmi";
 import mahjongNFTAbi from "@/abi/mahjongNFT";
 import { parseEther } from "viem";
 import { memo, useRef, useState } from "react";
@@ -12,7 +12,6 @@ function UploadButtonOfIPFS() {
   const { writeContractWithPromise } = useContractWrite();
   const account = useAccount();
   // const chainId = useChainId()
-  const { writeContract } = useWriteContract();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const metadataRef = useRef({});
 

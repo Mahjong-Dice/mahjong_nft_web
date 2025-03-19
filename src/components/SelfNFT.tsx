@@ -5,7 +5,7 @@ import { useWriteContract, useChainId, useWatchContractEvent, useReadContract, u
 import { encodeAbiParameters, keccak256, parseEther } from "viem";
 import configAbi from '@/abi/mahjongNFT'
 import { config } from "@/wagmi";
-import { useContractWrite, useApprove } from "@/hooks/useContractWrite";
+import { useApprove } from "@/hooks/useContractWrite";
 
 interface SelfNFTProps {
   name: string;
@@ -22,12 +22,11 @@ const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string
 
 
 const SelfNFT: React.FC<SelfNFTProps> = ({ name, tokenId }) => {
-  const { writeContractWithPromise } = useContractWrite()
   const { approve } = useApprove()
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [price, setPrice] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { writeContract, data, error } = useWriteContract({ config });
+  const { writeContract } = useWriteContract({ config });
   const { signMessage, data: signData } = useSignMessage()
   const chainId = useChainId()
   // 打开上架模态框
@@ -43,7 +42,7 @@ const SelfNFT: React.FC<SelfNFTProps> = ({ name, tokenId }) => {
     chainId,
     onLogs: (logs) => {
       console.log("NFTListed Event =>", logs)
-      
+
     },
     onError: (error) => {
       console.error("NFTListed Event Error =>", error)
