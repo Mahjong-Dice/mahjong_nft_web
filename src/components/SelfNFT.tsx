@@ -1,55 +1,90 @@
 import React, { memo, useEffect, useState } from "react";
 import { Button, Input, message, Modal } from "antd";
 
-import { useWriteContract, useChainId, useWatchContractEvent, useReadContract, useSignMessage } from "wagmi";
-import { encodeAbiParameters, keccak256, parseEther } from "viem";
-import configAbi from '@/abi/mahjongNFT'
+import {
+  useWriteContract,
+  useSignMessage,
+  useWaitForTransactionReceipt,
+} from "wagmi";
+import {
+  encodeAbiParameters,
+  keccak256,
+  parseEther,
+  formatEther,
+  parseEventLogs,
+} from "viem";
+import configAbi from "@/abi/mahjongNFT";
 import { config } from "@/wagmi";
 import { useApprove } from "@/hooks/useContractWrite";
+import { useFetchGraphQL } from "@/lib/api";
 
 interface SelfNFTProps {
   name: string;
   tokenId: string;
+  nftId: string;
 }
 
 const ORDER_PARAMS = [
   { name: "contract_", type: "address" },
   { name: "tokenIds", type: "uint256[]" },
   { name: "price", type: "uint256" },
-  { name: "expiry", type: "uint256" }
+  { name: "expiry", type: "uint256" },
 ];
-const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
+const CONTRACT_ADDRESS = process.env
+  .NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
 
-
-const SelfNFT: React.FC<SelfNFTProps> = ({ name, tokenId }) => {
-  const { approve } = useApprove()
+const SelfNFT: React.FC<SelfNFTProps> = ({ name, tokenId, nftId }) => {
+  const { approve } = useApprove();
+  const { createListing } = useFetchGraphQL();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [price, setPrice] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const { writeContract } = useWriteContract({ config });
-  const { signMessage, data: signData } = useSignMessage()
-  const chainId = useChainId()
+
+  const { writeContractAsync, data } = useWriteContract({
+    config,
+  });
+  const { data: receipt } = useWaitForTransactionReceipt({
+    hash: data,
+  });
+
+  const { signMessage } = useSignMessage();
+  useEffect(() => {
+    if (receipt) {
+      const events = parseEventLogs({
+        abi: configAbi.abi, // 必须包含事件定义的ABI
+        logs: receipt?.logs,
+      });
+      // 获取特定事件
+      const transferEvents = events.filter(
+        (event) => event.eventName === "NFTListed"
+      );
+      console.log("Transfer Events:", transferEvents);
+      const {
+        args: { seller, price },
+      } = transferEvents[0];
+      if (seller && price) {
+        addListing(price, seller);
+      }
+    }
+  }, [receipt]);
+
+  const addListing = async (price: bigint, seller: `0x${string}`) => {
+    const result = await createListing({
+      nftId,
+      price: Number(formatEther(price)),
+      seller: seller.toString(),
+    });
+    if (result) {
+      window.$message.success("上架成功");
+      setIsModalVisible(false);
+    }
+  };
+
   // 打开上架模态框
   const showListingModal = () => {
     setIsModalVisible(true);
   };
 
-  // 监听签名验证成功事件
-  useWatchContractEvent({
-    address: CONTRACT_ADDRESS, // 合约地址
-    abi: configAbi.abi, // 合约ABI
-    eventName: "NFTListed",
-    chainId,
-    onLogs: (logs) => {
-      console.log("NFTListed Event =>", logs)
-
-    },
-    onError: (error) => {
-      console.error("NFTListed Event Error =>", error)
-    },
-  })
-
-  // 处理上架操作
   const handleListing = async () => {
     if (!price || parseFloat(price) <= 0) {
       message.error("请输入有效的价格");
@@ -68,40 +103,39 @@ const SelfNFT: React.FC<SelfNFTProps> = ({ name, tokenId }) => {
         expiry: BigInt(Math.floor(Date.now() / 1000) + 60 * 60), // 1小时后过期，使用秒为单位
       };
 
-      const encodedData = encodeAbiParameters(
-        ORDER_PARAMS,
-        [
-          order.contract_,
-          order.tokenIds,
-          order.price,
-          order.expiry
-        ]
-      );
+      const encodedData = encodeAbiParameters(ORDER_PARAMS, [
+        order.contract_,
+        order.tokenIds,
+        order.price,
+        order.expiry,
+      ]);
       const messageHash = keccak256(encodedData);
-      console.log("order", messageHash)
+      console.log("order", messageHash);
       // sign
-      signMessage({
-        message: { raw: messageHash }
-      }, {
-        onSuccess(data) {
-          console.log("signMessage success", data)
-          // verify
-          writeContract({
-            address: CONTRACT_ADDRESS,
-            abi: configAbi.abi,
-            functionName: "listNFT",
-            args: [order.contract_, order.tokenIds, order.price, order.expiry, data],
-            gas: BigInt(1000000),
-          }, {
-            onSuccess: (data) => {
-              console.log("listNFT success", data)
-            },
-            onError: (error) => {
-              console.error("Contract call failed:", error);
-            }
-          })
+      signMessage(
+        {
+          message: { raw: messageHash },
         },
-      });
+        {
+          async onSuccess(data) {
+            console.log("signMessage success", data);
+            // verify
+            await writeContractAsync({
+              address: CONTRACT_ADDRESS,
+              abi: configAbi.abi,
+              functionName: "listNFT",
+              args: [
+                order.contract_,
+                order.tokenIds,
+                order.price,
+                order.expiry,
+                data,
+              ],
+              gas: BigInt(1000000),
+            });
+          },
+        }
+      );
     } catch (error) {
       console.error("上架NFT时出错:", error);
       window.$message.error("上架失败，请重试");

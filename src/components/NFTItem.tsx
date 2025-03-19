@@ -34,11 +34,11 @@ function NFTItem({ nft }: { nft: I_NFT }) {
           </div>
         </div>
         <div className="flex items-center justify-between">
-          {/* <span className="text-base font-medium text-green-400">{1} ETH</span> */}
+          <span className="text-base font-medium text-green-400">{1} ETH</span>
 
           <div>
             <NFTDetailsModal nft={nft} />
-            <SelfNFT name={name} tokenId={nft.tokenId} />
+            <SelfNFT name={name} tokenId={nft.tokenId} nftId={nft.id}/>
           </div>
         </div>
       </div>

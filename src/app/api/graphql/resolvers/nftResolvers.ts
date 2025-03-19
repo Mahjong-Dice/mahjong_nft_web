@@ -5,7 +5,12 @@ export const resolvers = {
     Query: {
         nfts: async (_: any, { filter }: { filter?: any }) => {
             const where = filter || {};
-            return await prisma.nFT.findMany({ where })
+            return await prisma.nFT.findMany({ 
+                where,
+                include: {
+                    listings: true // 包含关联的 listings
+                }
+            })
         },
         nft: async (_: any, { id }: { id: string }) => {
             return await prisma.nFT.findUnique({
@@ -122,6 +127,13 @@ export const resolvers = {
         nft: async (parent: any) => {
             return await prisma.nFT.findUnique({
                 where: { id: parent.nftId }
+            });
+        }
+    },
+    NFT: {
+        listings: async (parent: any) => {
+            return await prisma.listing.findMany({
+                where: { nftId: parent.id }
             });
         }
     }

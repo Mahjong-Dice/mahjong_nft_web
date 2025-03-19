@@ -1,6 +1,6 @@
-import { useWriteContract } from 'wagmi';
-import { message } from 'antd';
-import mahjongNFTAbi from '@/abi/mahjongNFT';
+import { useWriteContract } from "wagmi";
+import { message } from "antd";
+import mahjongNFTAbi from "@/abi/mahjongNFT";
 
 interface ContractWriteParams {
   address: `0x${string}`;
@@ -45,14 +45,20 @@ export const useApprove = () => {
   const { writeContractWithPromise } = useContractWrite();
 
   const approve = async (tokenId: number | bigint) => {
+    console.log("approve", {
+      address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+      abi: mahjongNFTAbi.abi,
+      functionName: "approve",
+      args: [process.env.NEXT_PUBLIC_CONTRACT_ADDRESS, tokenId],
+    });
     return writeContractWithPromise({
       address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
       abi: mahjongNFTAbi.abi,
       functionName: "approve",
       args: [process.env.NEXT_PUBLIC_CONTRACT_ADDRESS, tokenId],
-    })
-  }
+    });
+  };
   return {
-    approve
-  }
-}
+    approve,
+  };
+};

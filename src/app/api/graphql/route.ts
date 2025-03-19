@@ -2,11 +2,11 @@ import { ApolloServer } from '@apollo/server';
 import { startServerAndCreateNextHandler } from '@as-integrations/next';
 import { readFileSync } from 'fs';
 import { join } from 'path';
-import { resolvers } from '@/graphql/resolvers/nftResolvers';
+import { resolvers } from '@/app/api/graphql/resolvers/nftResolvers';
 import { NextRequest } from 'next/server';
 
 const typeDefs = readFileSync(
-  join(process.cwd(), 'src/graphql/schema.graphql'),
+  join(process.cwd(), 'src/app/api/graphql/schema.graphql'),
   'utf-8'
 );
 
