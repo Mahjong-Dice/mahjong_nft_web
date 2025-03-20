@@ -43,16 +43,16 @@ function NFTList() {
       }, 1000);
     },
   });
-  // useWatchContractEvent({
-  //   address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
-  //   abi: mahjongNFT.abi,
-  //   eventName: "NFTListed",
-  //   onLogs: () => {
-  //     setTimeout(async () => {
-  //       await refetch();
-  //     }, 1000);
-  //   },
-  // });
+  useWatchContractEvent({
+    address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+    abi: mahjongNFT.abi,
+    eventName: "NFTListed",
+    onLogs: () => {
+      setTimeout(async () => {
+        await refetch();
+      }, 1000);
+    },
+  });
 
   useEffect(() => {
     refetch();

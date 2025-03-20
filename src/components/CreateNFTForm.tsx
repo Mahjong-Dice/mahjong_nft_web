@@ -28,12 +28,12 @@ const CreateNFTForm = ({ open, onClose, onSuccess }: CreateNFTFormProps) => {
     const beforeUpload = (file: RcFile) => {
         const isImage = file.type.startsWith('image/');
         if (!isImage) {
-            message.error('只能上传图片文件！');
+            window.$message.error('只能上传图片文件！');
             return false;
         }
         const isLt10M = file.size / 1024 / 1024 < 10;
         if (!isLt10M) {
-            message.error('图片大小不能超过 10MB！');
+            window.$message.error('图片大小不能超过 10MB！');
             return false;
         }
         // 设置文件名（不包含扩展名）作为 NFT 名称
@@ -44,7 +44,7 @@ const CreateNFTForm = ({ open, onClose, onSuccess }: CreateNFTFormProps) => {
 
     const handleSubmit = async (values: any) => {
         if (fileList.length === 0) {
-            message.error('请上传 NFT 图片！');
+            window.$message.error('请上传 NFT 图片！');
             return;
         }
 
@@ -62,7 +62,7 @@ const CreateNFTForm = ({ open, onClose, onSuccess }: CreateNFTFormProps) => {
 
             const { path: metadataCid } = await uploadMetadata(metadata);
 
-            message.success('NFT 元数据上传成功！');
+            window.$message.success('NFT 元数据上传成功！');
             onSuccess({
                 ...metadata,
                 metadataCid
@@ -71,7 +71,7 @@ const CreateNFTForm = ({ open, onClose, onSuccess }: CreateNFTFormProps) => {
             handleCancel()
         } catch (error) {
             console.error('上传失败:', error);
-            message.error('上传失败，请重试！');
+            window.$message.error('上传失败，请重试！');
         } finally {
             setUploading(false);
         }
