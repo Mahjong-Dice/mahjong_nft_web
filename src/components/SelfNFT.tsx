@@ -45,7 +45,7 @@ const SelfNFT: React.FC<SelfNFTProps> = ({ name, tokenId, nftId }) => {
   });
   const { logs } = useWriteContractGetLogs(data, configAbi.abi, "NFTListed");
   useEffect(() => {
-    console.log("logs", logs);
+    if(logs.length === 0) return;
     const {
       args: { seller, price },
     } = logs[0];
