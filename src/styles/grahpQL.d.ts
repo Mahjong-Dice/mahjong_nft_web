@@ -2,7 +2,7 @@
 
 // NFT 基础接口
 export interface INFT {
-  id?: string;
+  id: string;
   tokenId: string;
   contractAddress: string;
   metadata: Record<string, any>; // JSON 类型
@@ -23,7 +23,7 @@ export interface INFTCreateRequest {
 
 // NFT 响应接口
 export interface INFTResponse extends INFT {
-  listings?: IListing[];
+  listing?: IListing;
   transactions?: ITransaction[];
 }
 

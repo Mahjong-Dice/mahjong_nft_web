@@ -9,12 +9,12 @@ import NFTItem from "./NFTItem";
 import { useQuery } from "@apollo/client";
 import { GET_NFTS } from "@/lib/api";
 import mahjongNFT from "@/abi/mahjongNFT";
-import { I_NFT } from "@/types";
+import { INFTResponse } from "@/styles/grahpQL";
 
 function NFTList() {
   const { address } = useAccount();
   const chainId = useChainId();
-  const [nftList, setNftList] = useState<I_NFT[]>([]);
+  const [nftList, setNftList] = useState<INFTResponse[]>([]);
 
   // 调用后端接口获取用户的 NFT 列表
   const {
@@ -54,8 +54,8 @@ function NFTList() {
       setNftList([]);
 
       // 为每个 CID 创建单独的获取过程
-      const nfts: I_NFT[] = data.nfts;
-      const newNfts: I_NFT[] = [];
+      const nfts: INFTResponse[] = data.nfts;
+      const newNfts: INFTResponse[] = [];
       nfts.forEach(async (nft) => {
         const { metadata } = nft;
         if (typeof metadata === "string") {
@@ -64,30 +64,6 @@ function NFTList() {
         }
       });
       setNftList(newNfts);
-      //   const metadataArray = data.nfts
-      //     .map((item: any) => item.metadata)
-      //     .filter(Boolean)
-      //     .map(JSON.parse);
-      //   setNftList(metadataArray);
-
-      // nfts.forEach(async (cid, index) => {
-      //     try {
-      //         if (!cid) return;
-      //         console.log(cid)
-      //         // setNftList(cid)
-      //         // const metadata = await fetchMetadata(cid)
-      //         // if (metadata) {
-      //         //     setNftList(prev => [...prev, metadata])
-      //         // }
-      //     } catch (error) {
-      //         console.error(`Error loading NFT metadata for CID ${cid}:`, error)
-      //     } finally {
-      //         // 当最后一个 NFT 加载完成时，设置 loading 为 false
-      //         // if (index === data.length - 1) {
-      //         //     setIsLoading(false)
-      //         // }
-      //     }
-      // })
     } catch (error) {
       console.error(error);
     }

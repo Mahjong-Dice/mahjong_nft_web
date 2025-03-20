@@ -5,7 +5,10 @@ type NFT {
   metadata: String!
   owner: String!
   creator: String!
-  listings: [Listing!]!
+  createdAt: String!
+  updatedAt: String!
+  listing: Listing
+  transactions: [Transaction!]!
 }
 
 input NFTCreateInput {
@@ -36,6 +39,16 @@ type Listing {
   isActive: Boolean!
   createdAt: String!
   updatedAt: String!
+}
+
+type Transaction {
+  id: ID!
+  nft: NFT!
+  nftId: String!
+  fromAddress: String!
+  toAddress: String!
+  price: Float!
+  timestamp: String!
 }
 
 input ListingCreateInput {

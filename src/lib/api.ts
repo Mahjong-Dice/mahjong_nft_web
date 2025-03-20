@@ -1,4 +1,4 @@
-import { IListing, IListingCreateRequest } from "@/app/api/nfts/interface";
+import { IListing, IListingCreateRequest } from "@/styles/grahpQL";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 export const CREATE_NFT = gql`
@@ -23,6 +23,15 @@ export const GET_NFTS = gql`
       metadata
       owner
       creator
+      listing {
+            id
+            nftId
+            price
+            seller
+            isActive
+            createdAt
+            updatedAt
+      }
     }
   }
 `;

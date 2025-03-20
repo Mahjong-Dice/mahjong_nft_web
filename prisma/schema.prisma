@@ -22,7 +22,7 @@ model NFT {
   creator     String   // 创建者地址
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  listings    Listing[]
+  listing     Listing?  // 改为可选的单个关系
   transactions Transaction[]
 
   @@unique([tokenId, contractAddress])
@@ -31,7 +31,7 @@ model NFT {
 model Listing {
   id          String   @id @default(uuid())
   nft         NFT      @relation(fields: [nftId], references: [id])
-  nftId       String
+  nftId       String   @unique  // 添加唯一约束，确保一个 NFT 只能有一个 listing
   price       Float
   seller      String   // 卖家地址
   isActive    Boolean  @default(true)

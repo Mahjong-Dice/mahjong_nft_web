@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import type { INFTCreateRequest } from './interface.d.ts'
+import type { INFTCreateRequest } from '../../../styles/grahpQL.js'
 
 export async function POST(request: NextRequest) {
     try {

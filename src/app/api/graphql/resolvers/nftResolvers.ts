@@ -1,14 +1,15 @@
 import prisma from '@/lib/prisma'
-import type { INFTCreateRequest, IListingCreateRequest, IListing } from '@/app/api/nfts/interface'
+import type { INFTCreateRequest, IListingCreateRequest, IListing } from '@/styles/grahpQL'
 
 export const resolvers = {
     Query: {
         nfts: async (_: any, { filter }: { filter?: any }) => {
             const where = filter || {};
-            return await prisma.nFT.findMany({ 
+            return await prisma.nFT.findMany({
                 where,
                 include: {
-                    listings: true // 包含关联的 listings
+                    listing: true,
+                    transactions: true
                 }
             })
         },
@@ -131,8 +132,13 @@ export const resolvers = {
         }
     },
     NFT: {
-        listings: async (parent: any) => {
-            return await prisma.listing.findMany({
+        listing: async (parent: any) => {
+            return await prisma.listing.findUnique({
+                where: { nftId: parent.id }
+            });
+        },
+        transactions: async (parent: any) => {
+            return await prisma.transaction.findMany({
                 where: { nftId: parent.id }
             });
         }

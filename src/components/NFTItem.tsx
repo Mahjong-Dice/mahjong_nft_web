@@ -3,6 +3,7 @@ import { I_NFT } from "@/types";
 import SelfNFT from "./SelfNFT";
 import NFTDetailsModal from "./NFTDetailsModal";
 import { Image } from "antd";
+import { INFTResponse } from "@/styles/grahpQL";
 
 export interface NFTItemProps {
   image: string;
@@ -11,7 +12,7 @@ export interface NFTItemProps {
   attributes?: { trait_type: string; value: string }[];
 }
 
-function NFTItem({ nft }: { nft: I_NFT }) {
+function NFTItem({ nft }: { nft: INFTResponse }) {
   const { image, name, description } = nft.metadata;
   return (
     <div className="group cursor-pointer relative overflow-hidden rounded-xl bg-white/10 p-3 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
@@ -34,11 +35,18 @@ function NFTItem({ nft }: { nft: I_NFT }) {
           </div>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-base font-medium text-green-400">{1} ETH</span>
+          {
+            nft.listing && (
+              <span className="text-base font-medium text-green-400">{nft.listing.price} ETH</span>
+            )
+          }
+
 
           <div>
             <NFTDetailsModal nft={nft} />
-            <SelfNFT name={name} tokenId={nft.tokenId} nftId={nft.id}/>
+            {
+              !nft.listing?.isActive && <SelfNFT name={name} tokenId={nft.tokenId} nftId={nft.id} />
+            }
           </div>
         </div>
       </div>
