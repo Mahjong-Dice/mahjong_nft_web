@@ -8,12 +8,7 @@ import { useAccount } from "wagmi";
 import DeactivatedListing from "./DeactivatedListing";
 import BuyNFTListing from "./BuyNFTListing";
 
-export interface NFTItemProps {
-  image: string;
-  name: string;
-  description: string;
-  attributes?: { trait_type: string; value: string }[];
-}
+
 function NFTItem({ nft }: { nft: INFTResponse }) {
   const { image, name, description } = nft.metadata;
   const { address } = useAccount();
@@ -21,8 +16,8 @@ function NFTItem({ nft }: { nft: INFTResponse }) {
 
   function showUtils() {
     if (nft.listing?.isActive) {
-      if (isOwner) {
-        return <DeactivatedListing />
+      if (isOwner && nft.listing.id) {
+        return <DeactivatedListing tokenId={nft.tokenId} listingId={nft.listing.id}/>
       } else {
         return <BuyNFTListing />
       }
@@ -34,7 +29,7 @@ function NFTItem({ nft }: { nft: INFTResponse }) {
   }
   return (
     <div className="group cursor-pointer relative overflow-hidden rounded-xl bg-white/10 p-3 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-      <div className="aspect-square w-full max-w-[300px] mx-auto overflow-hidden rounded-lg relative">
+      <div className="aspect-square w-full max-h-60 max-w-[300px] mx-auto overflow-hidden rounded-lg relative">
         <Image
           src={image}
           alt={name}
@@ -54,13 +49,13 @@ function NFTItem({ nft }: { nft: INFTResponse }) {
         </div>
         <div className="flex items-center justify-between">
           {
-            nft.listing && (
+            nft.listing?.isActive && (
               <span className="text-base font-medium text-green-400">{nft.listing.price} ETH</span>
             )
           }
 
 
-          <div className="flex gap-2">
+          <div className="flex items-center justify-between flex-1">
             <NFTDetailsModal nft={nft} />
             {
               showUtils()

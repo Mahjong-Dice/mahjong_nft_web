@@ -2,18 +2,11 @@ import React, { memo, useEffect, useState } from "react";
 import { Button, Input, message, Modal } from "antd";
 
 import {
-  useWriteContract,
-  useSignMessage,
-  useWaitForTransactionReceipt,
-} from "wagmi";
-import {
-  encodeAbiParameters,
-  keccak256,
   parseEther,
   formatEther,
 } from "viem";
 import configAbi from "@/abi/mahjongNFT";
-import { useApprove, useWriteContractGetLogs } from "@/hooks/useContractWrite";
+import { useContractFunctions, useWriteContractGetLogs } from "@/hooks/useContractWrite";
 import { useFetchGraphQL } from "@/lib/api";
 
 interface SelfNFTProps {
@@ -32,8 +25,8 @@ const CONTRACT_ADDRESS = process.env
   .NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
 
 const SelfNFT: React.FC<SelfNFTProps> = ({ name, tokenId, nftId }) => {
-  const { approve, signMessageOfAccount, callListNFT } = useApprove();
-  const { createListing } = useFetchGraphQL();
+  const { approve, signMessageOfAccount, callListNFT } = useContractFunctions();
+  const { createListingFetch } = useFetchGraphQL();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [price, setPrice] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -53,7 +46,7 @@ const SelfNFT: React.FC<SelfNFTProps> = ({ name, tokenId, nftId }) => {
 
   // add listing
   const addListing = async (price: bigint, seller: `0x${string}`) => {
-    const result = await createListing({
+    const result = await createListingFetch({
       nftId,
       price: Number(formatEther(price)),
       seller: seller.toString(),

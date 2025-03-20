@@ -1,17 +1,17 @@
 import { useSignMessage, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
-import { message } from "antd";
 import mahjongNFTAbi from "@/abi/mahjongNFT";
 import { useEffect, useState } from "react";
 import { parseEventLogs, Abi, encodeAbiParameters, keccak256 } from "viem";
 
-interface ContractWriteParams {
+interface ContractWriteParams<TAbi extends Abi = Abi> {
   address: `0x${string}`;
-  abi: any;
-  functionName: string;
+  abi: TAbi;
+  functionName: Extract<TAbi[number], { type: 'function' }>['name'];
   args?: any[];
   value?: bigint;
   [key: string]: any;
 }
+
 
 interface Order {
   contract_: `0x${string}`,
@@ -34,7 +34,7 @@ const ORDER_PARAMS = [
 export const useContractWrite = () => {
   const { writeContract } = useWriteContract();
 
-  const writeContractWithPromise = (params: ContractWriteParams) => {
+  const writeContractWithPromise = <TAbi extends Abi = Abi>(params: ContractWriteParams<TAbi>) => {
     return new Promise<Address>((resolve, reject) => {
       writeContract(
         // @ts-ignore
@@ -109,7 +109,7 @@ export const useWriteContractGetLogs = <
  * 授权NFT给合约
  * @returns approve 授权
  */
-export const useApprove = () => {
+export const useContractFunctions = () => {
   const { writeContractWithPromise } = useContractWrite();
   const { signMessage } = useSignMessage();
 
@@ -196,8 +196,8 @@ export const useApprove = () => {
       }
     })
 
-  }
-
+  } 
+  // 上架
   const callListNFT = (order: Order, signature: `0x${string}`): Promise<`0x${string}`> => {
     return writeContractWithPromise({
       address: CONTRACT_ADDRESS,
@@ -213,11 +213,21 @@ export const useApprove = () => {
       gas: BigInt(1000000),
     });
   }
+  // 下架
+  const cancelListNFT = (listingId: string) => {
+    return writeContractWithPromise({
+      address: CONTRACT_ADDRESS,
+      abi: mahjongNFTAbi.abi,
+      functionName: "revokeApproval",
+      args: [listingId],
+    });
+  }
 
   return {
     approve,
     revokeApproval,
     signMessageOfAccount,
-    callListNFT
+    callListNFT,
+    cancelListNFT
   };
 };

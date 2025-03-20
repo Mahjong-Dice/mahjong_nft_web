@@ -69,7 +69,7 @@ export function useFetchGraphQL() {
   const [_deactivateListing] = useMutation(DEACTIVATE_LISTING);
 
   // 上架
-  function createListing(input: IListingCreateRequest) {
+  function createListingFetch(input: IListingCreateRequest) {
     return _createListing({
       variables: {
         input,
@@ -77,7 +77,7 @@ export function useFetchGraphQL() {
     });
   }
   // 下架
-  function removeListing(id: string) {
+  function removeListingFetch(id: string) {
     return _deactivateListing({
       variables: {
         id,
@@ -86,7 +86,7 @@ export function useFetchGraphQL() {
   }
 
   return {
-    createListing,
-    removeListing
+    createListingFetch,
+    removeListingFetch
   };
 }
