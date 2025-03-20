@@ -62,7 +62,7 @@ const CreateNFTForm = ({ open, onClose, onSuccess }: CreateNFTFormProps) => {
 
             const { path: metadataCid } = await uploadMetadata(metadata);
 
-            window.$message.success('NFT 元数据上传成功！');
+            // window.$message.success('NFT 元数据上传成功！');
             onSuccess({
                 ...metadata,
                 metadataCid

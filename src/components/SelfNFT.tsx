@@ -8,6 +8,7 @@ import {
 import configAbi from "@/abi/mahjongNFT";
 import { useContractFunctions, useWriteContractGetLogs } from "@/hooks/useContractWrite";
 import { useFetchGraphQL } from "@/lib/api";
+import useStore from "@/store";
 
 interface SelfNFTProps {
   name: string;
@@ -30,6 +31,7 @@ const SelfNFT: React.FC<SelfNFTProps> = ({ name, tokenId, nftId }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [price, setPrice] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { refetchList } = useStore();
 
   const [listNFTHash, setListNFTHash] = useState<`0x${string}`>();
   const { logs } = useWriteContractGetLogs(listNFTHash, configAbi.abi, "NFTListed");
@@ -40,6 +42,7 @@ const SelfNFT: React.FC<SelfNFTProps> = ({ name, tokenId, nftId }) => {
     } = logs[0];
     if (seller && price) {
       addListing(price, seller);
+      refetchList && refetchList();
     }
   }, [logs]);
 

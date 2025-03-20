@@ -1,4 +1,9 @@
-import { useSignMessage, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import {
+  useSignMessage,
+  useWaitForTransactionReceipt,
+  useWriteContract,
+  useConfig,
+} from "wagmi";
 import mahjongNFTAbi from "@/abi/mahjongNFT";
 import { useEffect, useState } from "react";
 import { parseEventLogs, Abi, encodeAbiParameters, keccak256 } from "viem";
@@ -6,21 +11,20 @@ import { parseEventLogs, Abi, encodeAbiParameters, keccak256 } from "viem";
 interface ContractWriteParams<TAbi extends Abi = Abi> {
   address: `0x${string}`;
   abi: TAbi;
-  functionName: Extract<TAbi[number], { type: 'function' }>['name'];
+  functionName: Extract<TAbi[number], { type: "function" }>["name"];
   args?: any[];
   value?: bigint;
   [key: string]: any;
 }
 
-
 interface Order {
-  contract_: `0x${string}`,
-  tokenIds: bigint[],
-  price: bigint,
-  expiry: bigint,
+  contract_: `0x${string}`;
+  tokenIds: bigint[];
+  price: bigint;
+  expiry: bigint;
 }
 
-type Address = `0x${string}`
+type Address = `0x${string}`;
 
 const CONTRACT_ADDRESS = process.env
   .NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
@@ -34,7 +38,9 @@ const ORDER_PARAMS = [
 export const useContractWrite = () => {
   const { writeContract } = useWriteContract();
 
-  const writeContractWithPromise = <TAbi extends Abi = Abi>(params: ContractWriteParams<TAbi>) => {
+  const writeContractWithPromise = <TAbi extends Abi = Abi>(
+    params: ContractWriteParams<TAbi>
+  ) => {
     return new Promise<Address>((resolve, reject) => {
       writeContract(
         // @ts-ignore
@@ -60,10 +66,10 @@ export const useContractWrite = () => {
 
 /**
  * 通过 transaction hash 获取合约事件日志
- * @param hash 
- * @param abi 
- * @param event 
- * @returns 
+ * @param hash
+ * @param abi
+ * @param event
+ * @returns
  */
 export const useWriteContractGetLogs = <
   TAbi extends Abi,
@@ -114,9 +120,9 @@ export const useContractFunctions = () => {
   const { signMessage } = useSignMessage();
 
   /**
-   * 授权   
-   * @param tokenId 
-   * @returns 
+   * 授权
+   * @param tokenId
+   * @returns
    */
   const approve = async (tokenId: number | bigint) => {
     return writeContractWithPromise({
@@ -129,8 +135,8 @@ export const useContractFunctions = () => {
 
   /**
    * 移除授权
-   * @param tokenId 
-   * @returns 
+   * @param tokenId
+   * @returns
    */
   const revokeApproval = (tokenId: number | bigint) => {
     return writeContractWithPromise({
@@ -139,7 +145,7 @@ export const useContractFunctions = () => {
       functionName: "revokeApproval",
       args: [tokenId],
     });
-  }
+  };
 
   /**
    * 生成消息密钥签名
@@ -157,8 +163,8 @@ export const useContractFunctions = () => {
    */
   const signMessageOfAccount = (tokenId: bigint, price: bigint) => {
     return new Promise<{
-      data: `0x${string}`,
-      order: Order
+      data: `0x${string}`;
+      order: Order;
     }>((resolve, reject) => {
       try {
         const order = {
@@ -176,29 +182,34 @@ export const useContractFunctions = () => {
         ]);
         const messageHash = keccak256(encodedData);
 
-        signMessage({
-          message: {
-            raw: messageHash,
-          }
-        }, {
-          onSuccess(data) {
-            resolve({
-              data,
-              order
-            })
+        signMessage(
+          {
+            message: {
+              raw: messageHash,
+            },
           },
-          onError(error) {
-            reject(error.message)
+          {
+            onSuccess(data) {
+              resolve({
+                data,
+                order,
+              });
+            },
+            onError(error) {
+              reject(error.message);
+            },
           }
-        })
+        );
       } catch (error) {
-        reject(error)
+        reject(error);
       }
-    })
-
-  } 
+    });
+  };
   // 上架
-  const callListNFT = (order: Order, signature: `0x${string}`): Promise<`0x${string}`> => {
+  const callListNFT = (
+    order: Order,
+    signature: `0x${string}`
+  ): Promise<`0x${string}`> => {
     return writeContractWithPromise({
       address: CONTRACT_ADDRESS,
       abi: mahjongNFTAbi.abi,
@@ -212,7 +223,7 @@ export const useContractFunctions = () => {
       ],
       gas: BigInt(1000000),
     });
-  }
+  };
   // 下架
   const cancelListNFT = (listingId: string) => {
     return writeContractWithPromise({
@@ -221,13 +232,13 @@ export const useContractFunctions = () => {
       functionName: "revokeApproval",
       args: [listingId],
     });
-  }
+  };
 
   return {
     approve,
     revokeApproval,
     signMessageOfAccount,
     callListNFT,
-    cancelListNFT
+    cancelListNFT,
   };
 };

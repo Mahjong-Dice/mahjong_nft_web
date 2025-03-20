@@ -2,7 +2,7 @@
  * 展示用户的 NFT 列表
  */
 
-import { memo, useEffect, useState } from "react";
+import { memo, use, useEffect, useState } from "react";
 import { useChainId, useAccount, useWatchContractEvent } from "wagmi";
 // import mahjongNFTAbi from '@/abi/mahjongNFT'
 import NFTItem from "./NFTItem";
@@ -10,13 +10,15 @@ import { useQuery } from "@apollo/client";
 import { GET_NFTS } from "@/lib/api";
 import mahjongNFT from "@/abi/mahjongNFT";
 import { INFTResponse } from "@/styles/grahpQL";
+import useStore from "@/store";
 
 function NFTList() {
   const { address } = useAccount();
   const chainId = useChainId();
   const [nftList, setNftList] = useState<INFTResponse[]>([]);
-  const privateNftList = nftList.filter(item => item.owner === address);
-  const activeNftList = nftList.filter(item => item.listing?.isActive);
+  const privateNftList = nftList.filter((item) => item.owner === address);
+  const activeNftList = nftList.filter((item) => item.listing?.isActive);
+  const { setRefetch } = useStore();
 
   // 调用后端接口获取用户的 NFT 列表
   const {
@@ -32,6 +34,12 @@ function NFTList() {
       },
     },
   });
+  useEffect(() => {
+    if (refetch) {
+      setRefetch(refetch);
+    }
+  }, [refetch]);
+
   // 监听 NFT 创建事件
   useWatchContractEvent({
     address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
@@ -56,7 +64,7 @@ function NFTList() {
 
   useEffect(() => {
     refetch();
-  }, [chainId])
+  }, [chainId]);
 
   useEffect(() => {
     try {
@@ -92,11 +100,9 @@ function NFTList() {
     <div className="nft-list-container">
       <h1 className="text-white text-2xl font-bold">NFT上架列表</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
-        {
-          activeNftList.map((nft, index) => (
-            <NFTItem key={index} nft={nft} />
-          ))
-        }
+        {activeNftList.map((nft, index) => (
+          <NFTItem key={index} nft={nft} />
+        ))}
       </div>
       {/* 渲染 NFT 列表 */}
       <h1 className="text-white text-2xl font-bold">我的NFT</h1>

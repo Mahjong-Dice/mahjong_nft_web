@@ -4,16 +4,17 @@ import mahjongNFTAbi from "@/abi/mahjongNFT";
 import { parseEther } from "viem";
 import { memo, useRef, useState } from "react";
 import CreateNFTForm, { Metadata } from "@/components/CreateNFTForm";
-import { useContractWrite } from "@/hooks/useContractWrite";
+import { useContractWrite, useWriteContractGetLogs } from "@/hooks/useContractWrite";
 import { useMutation } from "@apollo/client";
 import { CREATE_NFT } from "@/lib/api";
+import useStore from "@/store";
 
 function UploadButtonOfIPFS() {
   const { writeContractWithPromise } = useContractWrite();
   const account = useAccount();
-  // const chainId = useChainId()
   const [isModalOpen, setIsModalOpen] = useState(false);
   const metadataRef = useRef({});
+  const { refetchList } = useStore();
 
   // 上传成功后调用, 铸造NFT
   const [createNFT] = useMutation(CREATE_NFT);
@@ -23,6 +24,8 @@ function UploadButtonOfIPFS() {
     abi: mahjongNFTAbi.abi,
     eventName: "NFTMinted",
     onLogs: async (logs) => {
+      console.log("NFTMinted", logs);
+      if (logs.length === 0) return;
       const {
         args: { tokenId },
       } = logs[0];
@@ -30,7 +33,6 @@ function UploadButtonOfIPFS() {
 
       if (metadataRef.current && tokenId) {
         console.log("save mint info to db");
-        // console.log(metadataRef.current, tokenId.toString());
         const input = {
           tokenId: tokenId.toString(),
           contractAddress: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS,
@@ -38,11 +40,12 @@ function UploadButtonOfIPFS() {
           owner: account.address,
           creator: account.address,
         };
-        createNFT({
+        await createNFT({
           variables: {
             input,
           },
         });
+        refetchList && refetchList();
         window.$message.success("mint success");
       }
     },
@@ -64,7 +67,7 @@ function UploadButtonOfIPFS() {
       functionName: "mint",
       args: [metadataCid],
       value: parseEther("0.001"),
-    })
+    });
   };
 
   return (
