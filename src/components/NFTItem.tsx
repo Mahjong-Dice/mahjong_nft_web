@@ -12,7 +12,11 @@ export interface NFTItemProps {
   attributes?: { trait_type: string; value: string }[];
 }
 
-function NFTItem({ nft }: { nft: INFTResponse }) {
+interface Types {
+  isOwner?: boolean;
+}
+
+function NFTItem({ nft, isOwner }: { nft: INFTResponse } & Types) {
   const { image, name, description } = nft.metadata;
   return (
     <div className="group cursor-pointer relative overflow-hidden rounded-xl bg-white/10 p-3 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
@@ -42,10 +46,15 @@ function NFTItem({ nft }: { nft: INFTResponse }) {
           }
 
 
-          <div>
+          <div className="flex gap-4">
             <NFTDetailsModal nft={nft} />
             {
               !nft.listing?.isActive && <SelfNFT name={name} tokenId={nft.tokenId} nftId={nft.id} />
+            }
+            {
+              isOwner && (
+                <button>修改价格</button>
+              )
             }
           </div>
         </div>
