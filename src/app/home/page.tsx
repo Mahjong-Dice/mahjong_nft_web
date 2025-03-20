@@ -37,7 +37,7 @@ function home() {
               }}
             />
           </div>
-          <SwitchTheme />
+          {/* <SwitchTheme /> */}
         </div>
       </header>
       <main className="container mx-auto p-4 overflow-auto flex-1 custom-scrollbar">
