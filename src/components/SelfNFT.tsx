@@ -13,7 +13,6 @@ import {
   formatEther,
 } from "viem";
 import configAbi from "@/abi/mahjongNFT";
-import { config } from "@/wagmi";
 import { useApprove, useWriteContractGetLogs } from "@/hooks/useContractWrite";
 import { useFetchGraphQL } from "@/lib/api";
 
@@ -33,18 +32,16 @@ const CONTRACT_ADDRESS = process.env
   .NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
 
 const SelfNFT: React.FC<SelfNFTProps> = ({ name, tokenId, nftId }) => {
-  const { approve } = useApprove();
+  const { approve, signMessageOfAccount, callListNFT } = useApprove();
   const { createListing } = useFetchGraphQL();
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [price, setPrice] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  const { writeContractAsync, data } = useWriteContract({
-    config,
-  });
-  const { logs } = useWriteContractGetLogs(data, configAbi.abi, "NFTListed");
+  const [listNFTHash, setListNFTHash] = useState<`0x${string}`>();
+  const { logs } = useWriteContractGetLogs(listNFTHash, configAbi.abi, "NFTListed");
   useEffect(() => {
-    if(logs.length === 0) return;
+    if (logs.length === 0) return;
     const {
       args: { seller, price },
     } = logs[0];
@@ -53,8 +50,8 @@ const SelfNFT: React.FC<SelfNFTProps> = ({ name, tokenId, nftId }) => {
     }
   }, [logs]);
 
-  const { signMessage } = useSignMessage();
 
+  // add listing
   const addListing = async (price: bigint, seller: `0x${string}`) => {
     const result = await createListing({
       nftId,
@@ -79,50 +76,12 @@ const SelfNFT: React.FC<SelfNFTProps> = ({ name, tokenId, nftId }) => {
     }
 
     try {
-      await approve(BigInt(tokenId));
       // 将ETH转换为wei
       const priceInWei = parseEther(price);
-
-      const order = {
-        contract_: CONTRACT_ADDRESS, // 使用合约地址作为contract_参数的值,
-        tokenIds: [BigInt(tokenId)],
-        price: priceInWei, // 使用转换后的wei值
-        expiry: BigInt(Math.floor(Date.now() / 1000) + 60 * 60), // 1小时后过期，使用秒为单位
-      };
-
-      const encodedData = encodeAbiParameters(ORDER_PARAMS, [
-        order.contract_,
-        order.tokenIds,
-        order.price,
-        order.expiry,
-      ]);
-      const messageHash = keccak256(encodedData);
-      console.log("order", messageHash);
-      // sign
-      signMessage(
-        {
-          message: { raw: messageHash },
-        },
-        {
-          async onSuccess(data) {
-            console.log("signMessage success", data);
-            // verify
-            await writeContractAsync({
-              address: CONTRACT_ADDRESS,
-              abi: configAbi.abi,
-              functionName: "listNFT",
-              args: [
-                order.contract_,
-                order.tokenIds,
-                order.price,
-                order.expiry,
-                data,
-              ],
-              gas: BigInt(1000000),
-            });
-          },
-        }
-      );
+      await approve(BigInt(tokenId));
+      const { data: signature, order } = await signMessageOfAccount(BigInt(tokenId), priceInWei);
+      const hash = await callListNFT(order, signature);
+      setListNFTHash(hash)
     } catch (error) {
       console.error("上架NFT时出错:", error);
       window.$message.error("上架失败，请重试");

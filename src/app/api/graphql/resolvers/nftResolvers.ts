@@ -122,7 +122,73 @@ export const resolvers = {
                     updatedAt: new Date()
                 }
             });
-        }
+        },
+        executeTransaction: async (_: any, { 
+            nftId, 
+            fromAddress, 
+            toAddress, 
+            price 
+        }: { 
+            nftId: string, 
+            fromAddress: string, 
+            toAddress: string, 
+            price: number 
+        }) => {
+            try {
+                return await prisma.$transaction(async (tx) => {
+                    // 1. 验证 NFT 存在性和所有权
+                    const nft = await tx.nFT.findUnique({
+                        where: { id: nftId },
+                        include: { listing: true }
+                    });
+
+                    if (!nft) {
+                        throw new Error('NFT not found');
+                    }
+
+                    if (nft.owner !== fromAddress) {
+                        throw new Error('Seller is not the owner of the NFT');
+                    }
+
+                    // 2. 创建交易记录
+                    const newTransaction = await tx.transaction.create({
+                        data: {
+                            nftId,
+                            fromAddress,
+                            toAddress,
+                            price
+                        }
+                    });
+
+                    // 3. 更新 NFT 所有者
+                    const updatedNFT = await tx.nFT.update({
+                        where: { id: nftId },
+                        data: { 
+                            owner: toAddress,
+                            updatedAt: new Date()
+                        }
+                    });
+
+                    // 4. 如果存在相关的 listing，将其设置为非活跃
+                    if (nft.listing) {
+                        await tx.listing.update({
+                            where: { nftId },
+                            data: { 
+                                isActive: false,
+                                updatedAt: new Date()
+                            }
+                        });
+                    }
+
+                    return newTransaction;
+                }, {
+                    timeout: 10000 // 10秒超时
+                });
+            } catch (error: any) {
+                console.error('Transaction failed:', error);
+                throw error;
+            }
+        },
     },
     Listing: {
         nft: async (parent: any) => {

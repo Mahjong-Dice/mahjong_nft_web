@@ -86,6 +86,12 @@ type Mutation {
   createListing(input: ListingCreateInput!): Listing!
   updateListing(id: ID!, price: Float): Listing!
   deactivateListing(id: ID!): Listing!
+  executeTransaction(
+    nftId: ID!
+    fromAddress: String!
+    toAddress: String!
+    price: Float!
+  ): Transaction
 }
 
 # 订阅操作定义，用于实时监听 NFT 相关事件

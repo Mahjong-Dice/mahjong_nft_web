@@ -50,9 +50,25 @@ export const CREATE_LISTING = gql`
   }
 `;
 
+export const DEACTIVATE_LISTING = gql`
+  mutation DeactivateListing($id: ID!) {
+    deactivateListing(id: $id) {
+      id
+      nftId
+      price
+      seller
+      isActive
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
 export function useFetchGraphQL() {
   const [_createListing] = useMutation(CREATE_LISTING);
+  const [_deactivateListing] = useMutation(DEACTIVATE_LISTING);
 
+  // 上架
   function createListing(input: IListingCreateRequest) {
     return _createListing({
       variables: {
@@ -60,7 +76,17 @@ export function useFetchGraphQL() {
       },
     });
   }
+  // 下架
+  function removeListing(id: string) {
+    return _deactivateListing({
+      variables: {
+        id,
+      },
+    });
+  }
+
   return {
     createListing,
+    removeListing
   };
 }
