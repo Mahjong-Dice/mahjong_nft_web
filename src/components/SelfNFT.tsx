@@ -11,7 +11,6 @@ import {
   keccak256,
   parseEther,
   formatEther,
-  parseEventLogs,
 } from "viem";
 import configAbi from "@/abi/mahjongNFT";
 import { config } from "@/wagmi";
@@ -134,7 +133,7 @@ const SelfNFT: React.FC<SelfNFTProps> = ({ name, tokenId, nftId }) => {
 
   return (
     <>
-      <Button type="link" color="cyan" onClick={showListingModal}>
+      <Button type="primary" color="cyan" onClick={showListingModal}>
         上架NFT
       </Button>
 
@@ -144,6 +143,7 @@ const SelfNFT: React.FC<SelfNFTProps> = ({ name, tokenId, nftId }) => {
         onOk={handleListing}
         onCancel={() => setIsModalVisible(false)}
         confirmLoading={isLoading}
+        destroyOnClose
       >
         <p>请输入您希望出售此NFT的价格（ETH）：</p>
         <Input

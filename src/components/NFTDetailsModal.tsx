@@ -18,7 +18,7 @@ const NFTDetailsModal = memo(
     return (
       <>
         {contextHolder}
-        <Button type="primary" onClick={() => setIsModalOpen(true)}>
+        <Button type="link" onClick={() => setIsModalOpen(true)}>
           查看详情
         </Button>
 

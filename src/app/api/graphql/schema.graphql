@@ -1,3 +1,4 @@
+# NFT 类型定义，表示一个非同质化代币
 type NFT {
   id: ID!
   tokenId: String!
@@ -11,6 +12,7 @@ type NFT {
   transactions: [Transaction!]!
 }
 
+# 创建 NFT 时的输入参数
 input NFTCreateInput {
   tokenId: String!
   contractAddress: String!
@@ -19,6 +21,7 @@ input NFTCreateInput {
   creator: String!
 }
 
+# NFT 查询过滤条件
 input NFTFilterInput {
   tokenId: String
   contractAddress: String
@@ -26,10 +29,12 @@ input NFTFilterInput {
   creator: String
 }
 
+# 删除 NFT 的响应
 type DeleteNFTsResponse {
   count: Int!
 }
 
+# 挂牌销售信息
 type Listing {
   id: ID!
   nft: NFT!
@@ -41,6 +46,7 @@ type Listing {
   updatedAt: String!
 }
 
+# NFT 交易记录
 type Transaction {
   id: ID!
   nft: NFT!
@@ -51,18 +57,21 @@ type Transaction {
   timestamp: String!
 }
 
+# 创建挂牌的输入参数
 input ListingCreateInput {
   nftId: String!
   price: Float!
   seller: String!
 }
 
+# 挂牌查询过滤条件
 input ListingFilterInput {
   nftId: String
   seller: String
   isActive: Boolean
 }
 
+# 查询操作定义
 type Query {
   nfts(filter: NFTFilterInput): [NFT!]!
   nft(id: ID!): NFT
@@ -70,10 +79,25 @@ type Query {
   listing(id: ID!): Listing
 }
 
+# 修改操作定义
 type Mutation {
   createNFT(input: NFTCreateInput!): NFT!
   deleteNFTs(id: ID!): DeleteNFTsResponse!
   createListing(input: ListingCreateInput!): Listing!
   updateListing(id: ID!, price: Float): Listing!
   deactivateListing(id: ID!): Listing!
+}
+
+# 订阅操作定义，用于实时监听 NFT 相关事件
+type Subscription {
+  # 监听新 NFT 创建事件
+  nftCreated: NFT! 
+  # 监听 NFT 被挂牌事件
+  nftListed: Listing!
+  # 监听 NFT 售出事件
+  nftSold: Transaction!
+  # 监听挂牌更新事件
+  listingUpdated: Listing!
+  # 监听挂牌下架事件
+  listingDeactivated: Listing!
 }

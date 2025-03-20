@@ -4,6 +4,9 @@ import SelfNFT from "./SelfNFT";
 import NFTDetailsModal from "./NFTDetailsModal";
 import { Image } from "antd";
 import { INFTResponse } from "@/styles/grahpQL";
+import { useAccount } from "wagmi";
+import DeactivatedListing from "./DeactivatedListing";
+import BuyNFTListing from "./BuyNFTListing";
 
 export interface NFTItemProps {
   image: string;
@@ -11,13 +14,24 @@ export interface NFTItemProps {
   description: string;
   attributes?: { trait_type: string; value: string }[];
 }
-
-interface Types {
-  isOwner?: boolean;
-}
-
-function NFTItem({ nft, isOwner }: { nft: INFTResponse } & Types) {
+function NFTItem({ nft }: { nft: INFTResponse }) {
   const { image, name, description } = nft.metadata;
+  const { address } = useAccount();
+  const isOwner = nft.owner === address;
+
+  function showUtils() {
+    if (nft.listing?.isActive) {
+      if (isOwner) {
+        return <DeactivatedListing />
+      } else {
+        return <BuyNFTListing />
+      }
+    } else {
+      if (isOwner) {
+        return <SelfNFT name={name} tokenId={nft.tokenId} nftId={nft.id} />
+      }
+    }
+  }
   return (
     <div className="group cursor-pointer relative overflow-hidden rounded-xl bg-white/10 p-3 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
       <div className="aspect-square w-full max-w-[300px] mx-auto overflow-hidden rounded-lg relative">
@@ -46,15 +60,10 @@ function NFTItem({ nft, isOwner }: { nft: INFTResponse } & Types) {
           }
 
 
-          <div className="flex gap-4">
+          <div className="flex gap-2">
             <NFTDetailsModal nft={nft} />
             {
-              !nft.listing?.isActive && <SelfNFT name={name} tokenId={nft.tokenId} nftId={nft.id} />
-            }
-            {
-              isOwner && (
-                <button>修改价格</button>
-              )
+              showUtils()
             }
           </div>
         </div>

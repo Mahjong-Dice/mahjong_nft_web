@@ -43,6 +43,16 @@ function NFTList() {
       }, 1000);
     },
   });
+  // useWatchContractEvent({
+  //   address: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`,
+  //   abi: mahjongNFT.abi,
+  //   eventName: "NFTListed",
+  //   onLogs: () => {
+  //     setTimeout(async () => {
+  //       await refetch();
+  //     }, 1000);
+  //   },
+  // });
 
   useEffect(() => {
     refetch();
@@ -92,7 +102,7 @@ function NFTList() {
       <h1 className="text-white text-2xl font-bold">我的NFT</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
         {privateNftList.map((nft, index) => (
-          <NFTItem key={index} nft={nft} isOwner/>
+          <NFTItem key={index} nft={nft} />
         ))}
       </div>
     </div>
