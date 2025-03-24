@@ -3,6 +3,7 @@ import {
   useWaitForTransactionReceipt,
   useWriteContract,
   useConfig,
+  useSimulateContract,
 } from "wagmi";
 import mahjongNFTAbi from "@/abi/mahjongNFT";
 import { useEffect, useState } from "react";
@@ -37,16 +38,19 @@ const ORDER_PARAMS = [
 
 export const useContractWrite = () => {
   const { writeContract } = useWriteContract();
+  const [paramsOfSimulate, setParamsOfSimulate] = useState({});
+
+  const { data: simulateData } = useSimulateContract(paramsOfSimulate);
 
   const writeContractWithPromise = <TAbi extends Abi = Abi>(
     params: ContractWriteParams<TAbi>
   ) => {
+    setParamsOfSimulate(params);
+
     return new Promise<Address>((resolve, reject) => {
       writeContract(
         // @ts-ignore
-        {
-          ...params,
-        },
+        simulateData?.request,
         {
           onSuccess: (data) => {
             console.log(`${params.functionName} success:`, data);
@@ -111,6 +115,7 @@ export const useWriteContractGetLogs = <
     logs,
   };
 };
+
 /**
  * 授权NFT给合约
  * @returns approve 授权
@@ -119,8 +124,8 @@ export const useContractFunctions = () => {
   const { writeContractWithPromise } = useContractWrite();
   const { signMessage } = useSignMessage();
 
-  /**
-   * 授权
+  /** 授权
+   * 
    * @param tokenId
    * @returns
    */
@@ -133,8 +138,8 @@ export const useContractFunctions = () => {
     });
   };
 
-  /**
-   * 移除授权
+  /** 移除授权
+   * 
    * @param tokenId
    * @returns
    */
@@ -147,8 +152,8 @@ export const useContractFunctions = () => {
     });
   };
 
-  /**
-   * 生成消息密钥签名
+  /** 生成消息密钥签名
+   * 
    * @param tokenId  
    * @param price 
    * @returns {
@@ -234,11 +239,27 @@ export const useContractFunctions = () => {
     });
   };
 
+  /** 购买
+   * 
+   * @param to 购买者地址
+   * @param tokenId 
+   * @returns 
+   */
+  const buyNFT = (to: Address, tokenId: number) => {
+    return writeContractWithPromise({
+      address: CONTRACT_ADDRESS,
+      abi: mahjongNFTAbi.abi,
+      functionName: "transferWithFee",
+      args: [to, tokenId],
+    });
+  };
+
   return {
     approve,
     revokeApproval,
     signMessageOfAccount,
     callListNFT,
     cancelListNFT,
+    buyNFT,
   };
 };

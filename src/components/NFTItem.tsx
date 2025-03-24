@@ -23,7 +23,7 @@ function NFTItem({ nft }: { nft: INFTResponse }) {
           />
         );
       } else {
-        return <BuyNFTListing />;
+        return <BuyNFTListing tokenId={+nft.tokenId}/>;
       }
     } else {
       if (isOwner) {
