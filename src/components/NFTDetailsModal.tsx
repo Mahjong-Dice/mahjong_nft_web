@@ -37,11 +37,11 @@ const NFTDetailsModal = memo(
             column={1}
             bordered
           >
-            {DescriptionsItem("拥有者", contractAddress, "拥有者地址")}
+            {DescriptionsItem("拥有者", owner, "拥有者地址")}
             {DescriptionsItem("价格", nft.listing?.price?.toString() + "eth", "价格")}
             {DescriptionsItem("创建者", creator, "创建者地址")}
             {DescriptionsItem("名称", nft.metadata.name)}
-            {DescriptionsItem("合约地址", nft.contractAddress)}
+            {DescriptionsItem("合约地址", contractAddress)}
             {DescriptionsItem("代币ID", tokenId.toString())}
             {DescriptionsItem("描述", nft.metadata.description)}
           </Descriptions>
