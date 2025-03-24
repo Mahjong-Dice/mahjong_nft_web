@@ -29,7 +29,7 @@ const HomePage: React.FC = () => {
       {/* 左侧内容区域 */}
       <div className="left-section">
         <div className="left-content">
-          <h1 className="main-title">麻将 NFT 收藏</h1>
+          <h1 className="main-title">NFT 交易所 Demo</h1>
           <h3 className="sub-title">
             探索独特的麻将数字藏品，连接您的钱包开始收藏之旅
           </h3>
