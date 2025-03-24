@@ -275,9 +275,10 @@ const mahjongNFTAbi = {
       inputs: [
         { name: "to", type: "address", internalType: "address" },
         { name: "tokenId", type: "uint256", internalType: "uint256" },
+        { name: "price", type: "uint256", internalType: "uint256" },
       ],
       outputs: [],
-      stateMutability: "nonpayable",
+      stateMutability: "payable",
     },
     {
       type: "function",
@@ -426,6 +427,43 @@ const mahjongNFTAbi = {
           type: "string",
           indexed: false,
           internalType: "string",
+        },
+      ],
+      anonymous: false,
+    },
+    {
+      type: "event",
+      name: "NFTTransferred",
+      inputs: [
+        {
+          name: "from",
+          type: "address",
+          indexed: true,
+          internalType: "address",
+        },
+        {
+          name: "to",
+          type: "address",
+          indexed: true,
+          internalType: "address",
+        },
+        {
+          name: "tokenId",
+          type: "uint256",
+          indexed: true,
+          internalType: "uint256",
+        },
+        {
+          name: "price",
+          type: "uint256",
+          indexed: false,
+          internalType: "uint256",
+        },
+        {
+          name: "fee",
+          type: "uint256",
+          indexed: false,
+          internalType: "uint256",
         },
       ],
       anonymous: false,

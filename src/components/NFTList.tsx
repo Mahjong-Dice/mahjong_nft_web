@@ -18,7 +18,7 @@ function NFTList() {
   const [nftList, setNftList] = useState<INFTResponse[]>([]);
   const privateNftList = nftList.filter((item) => item.owner === address);
   const activeNftList = nftList.filter((item) => item.listing?.isActive);
-  const { setRefetch } = useStore();
+  const { setRefetch, refetchList } = useStore();
 
   // 调用后端接口获取用户的 NFT 列表
   const {
@@ -100,14 +100,14 @@ function NFTList() {
     <div className="nft-list-container">
       <h1 className="text-white text-2xl font-bold">NFT上架列表</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
-        {activeNftList.map((nft, index) => (
+        {activeNftList && activeNftList.map((nft, index) => (
           <NFTItem key={index} nft={nft} />
         ))}
       </div>
       {/* 渲染 NFT 列表 */}
       <h1 className="text-white text-2xl font-bold">我的NFT</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-4">
-        {privateNftList.map((nft, index) => (
+        {privateNftList && privateNftList.map((nft, index) => (
           <NFTItem key={index} nft={nft} />
         ))}
       </div>

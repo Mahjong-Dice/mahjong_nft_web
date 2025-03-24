@@ -7,7 +7,14 @@ import {
 } from "wagmi";
 import mahjongNFTAbi from "@/abi/mahjongNFT";
 import { useEffect, useState } from "react";
-import { parseEventLogs, Abi, encodeAbiParameters, keccak256 } from "viem";
+import {
+  parseEventLogs,
+  Abi,
+  encodeAbiParameters,
+  keccak256,
+  parseEther,
+  formatEther,
+} from "viem";
 
 interface ContractWriteParams<TAbi extends Abi = Abi> {
   address: `0x${string}`;
@@ -38,19 +45,38 @@ const ORDER_PARAMS = [
 
 export const useContractWrite = () => {
   const { writeContract } = useWriteContract();
-  const [paramsOfSimulate, setParamsOfSimulate] = useState({});
+  const [paramsOfSimulate, setParamsOfSimulate] = useState(null);
 
-  const { data: simulateData } = useSimulateContract(paramsOfSimulate);
+  // const { data: simulateData, refetch, error } = useSimulateContract(paramsOfSimulate || undefined);
+
+  // useEffect(() => {
+  //   console.log("error", error);
+  // }, [error]);
+
+  // useEffect(() => {
+  //   console.log("simulateData", simulateData);
+  // }, [simulateData]);
+
+  // useEffect(() => {
+  //   console.log("paramsOfSimulate", paramsOfSimulate);
+  //   // 当参数变化时，手动触发重新获取模拟数据
+  //   if (paramsOfSimulate) {
+  //     refetch();
+  //   }
+  // }, [paramsOfSimulate, refetch]);
 
   const writeContractWithPromise = <TAbi extends Abi = Abi>(
     params: ContractWriteParams<TAbi>
   ) => {
-    setParamsOfSimulate(params);
+    console.log("params:", params);
+    // setParamsOfSimulate({
+    //   ...params,
+    // });
 
     return new Promise<Address>((resolve, reject) => {
       writeContract(
         // @ts-ignore
-        simulateData?.request,
+        params,
         {
           onSuccess: (data) => {
             console.log(`${params.functionName} success:`, data);
@@ -116,16 +142,12 @@ export const useWriteContractGetLogs = <
   };
 };
 
-/**
- * 授权NFT给合约
- * @returns approve 授权
- */
 export const useContractFunctions = () => {
   const { writeContractWithPromise } = useContractWrite();
   const { signMessage } = useSignMessage();
 
   /** 授权
-   * 
+   *
    * @param tokenId
    * @returns
    */
@@ -139,7 +161,7 @@ export const useContractFunctions = () => {
   };
 
   /** 移除授权
-   * 
+   *
    * @param tokenId
    * @returns
    */
@@ -240,17 +262,19 @@ export const useContractFunctions = () => {
   };
 
   /** 购买
-   * 
+   *
    * @param to 购买者地址
-   * @param tokenId 
-   * @returns 
+   * @param tokenId
+   * @returns
    */
-  const buyNFT = (to: Address, tokenId: number) => {
+  const buyNFT = async (to: Address, tokenId: number, price: number) => {
+
     return writeContractWithPromise({
       address: CONTRACT_ADDRESS,
       abi: mahjongNFTAbi.abi,
       functionName: "transferWithFee",
-      args: [to, tokenId],
+      args: [to, tokenId, parseEther(price.toString())],
+      value: parseEther('1'),
     });
   };
 

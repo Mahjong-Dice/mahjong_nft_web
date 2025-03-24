@@ -17,16 +17,16 @@ function BuyNFTListing({
   const { executeTransaction } = useFetchGraphQL();
 
   const handleBuy = async () => {
-    console.log("buy", tokenId, toAddress);
+    console.log("buy", tokenId, toAddress, price);
     if (!toAddress) return;
-    await buyNFT(toAddress, +tokenId);
-    const result = executeTransaction({
-      toAddress,
-      fromAddress: toAddress,
-      nftId: tokenId.toString(),
-      price,
-    });
-    console.log("result", result);
+    await buyNFT(toAddress, +tokenId, price);
+    // const result = executeTransaction({
+    //   toAddress,
+    //   fromAddress: toAddress,
+    //   nftId: tokenId.toString(),
+    //   price,
+    // });
+    // console.log("result", result);
   };
 
   return (
