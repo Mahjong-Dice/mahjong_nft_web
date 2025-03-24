@@ -1,16 +1,32 @@
 import { Button } from "antd";
 import { memo } from "react";
-import {} from "@/lib/api";
+import { useFetchGraphQL } from "@/lib/api";
 import { useContractFunctions } from "@/hooks/useContractWrite";
-import { Address } from "viem";
 import { useAccount } from "wagmi";
+import { ITransactionCreateRequest } from "@/styles/grahpQL";
 
-function BuyNFTListing({ tokenId }: { tokenId: number }) {
+type BuyNFTListingProps = Omit<ITransactionCreateRequest, "toAddress">;
+
+function BuyNFTListing({
+  nftId: tokenId,
+  price,
+  fromAddress,
+}: BuyNFTListingProps) {
   const { address: toAddress } = useAccount();
   const { buyNFT } = useContractFunctions();
+  const { executeTransaction } = useFetchGraphQL();
 
-  const handleBuy = () => {
+  const handleBuy = async () => {
     console.log("buy", tokenId, toAddress);
+    if (!toAddress) return;
+    await buyNFT(toAddress, +tokenId);
+    const result = executeTransaction({
+      toAddress,
+      fromAddress: toAddress,
+      nftId: tokenId.toString(),
+      price,
+    });
+    console.log("result", result);
   };
 
   return (

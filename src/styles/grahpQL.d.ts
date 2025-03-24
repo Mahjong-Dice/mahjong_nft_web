@@ -1,12 +1,14 @@
 // NFT 相关接口定义
 
+import { Address } from "viem";
+
 // NFT 基础接口
 export interface INFT {
   id: string;
   tokenId: string;
   contractAddress: string;
   metadata: Record<string, any>; // JSON 类型
-  owner: string;
+  owner: Address;
   creator: string;
   createdAt?: Date;
   updatedAt?: Date;
@@ -59,8 +61,8 @@ export interface ITransaction {
 // Transaction 创建请求接口
 export interface ITransactionCreateRequest {
   nftId: string;
-  fromAddress: string;
-  toAddress: string;
+  fromAddress: Address;
+  toAddress: Address;
   price: number;
 }
 

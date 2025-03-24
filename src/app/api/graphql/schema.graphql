@@ -71,6 +71,14 @@ input ListingFilterInput {
   isActive: Boolean
 }
 
+# 交易输入参数
+input TransactionInput {
+  nftId: ID!
+  fromAddress: String!
+  toAddress: String!
+  price: Float!
+}
+
 # 查询操作定义
 type Query {
   nfts(filter: NFTFilterInput): [NFT!]!
@@ -86,18 +94,13 @@ type Mutation {
   createListing(input: ListingCreateInput!): Listing!
   updateListing(id: ID!, price: Float): Listing!
   deactivateListing(id: ID!): Listing!
-  executeTransaction(
-    nftId: ID!
-    fromAddress: String!
-    toAddress: String!
-    price: Float!
-  ): Transaction
+  executeTransaction(input: TransactionInput!): Transaction!
 }
 
-# 订阅操作定义，用于实时监听 NFT 相关事件
+# # 订阅操作定义，用于实时监听 NFT 相关事件
 type Subscription {
   # 监听新 NFT 创建事件
-  nftCreated: NFT! 
+  nftCreated: NFT!
   # 监听 NFT 被挂牌事件
   nftListed: Listing!
   # 监听 NFT 售出事件

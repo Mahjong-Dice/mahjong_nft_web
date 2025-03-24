@@ -1,4 +1,8 @@
-import { IListing, IListingCreateRequest } from "@/styles/grahpQL";
+import {
+  IListing,
+  IListingCreateRequest,
+  ITransactionCreateRequest,
+} from "@/styles/grahpQL";
 import { gql, useMutation, useQuery } from "@apollo/client";
 
 export const CREATE_NFT = gql`
@@ -24,13 +28,13 @@ export const GET_NFTS = gql`
       owner
       creator
       listing {
-            id
-            nftId
-            price
-            seller
-            isActive
-            createdAt
-            updatedAt
+        id
+        nftId
+        price
+        seller
+        isActive
+        createdAt
+        updatedAt
       }
     }
   }
@@ -63,12 +67,29 @@ export const DEACTIVATE_LISTING = gql`
     }
   }
 `;
+export const EXECUTE_TRANSACTION = gql`
+  mutation ExecuteTransaction($input: TransactionInput!) {
+    listings(input: $input) {
+      id
+      nftId
+      fromAddress
+      toAddress
+      price
+      timestamp
+    }
+  }
+`;
 
 export function useFetchGraphQL() {
   const [_createListing] = useMutation(CREATE_LISTING);
   const [_deactivateListing] = useMutation(DEACTIVATE_LISTING);
+  const [_executeTransaction] = useMutation(EXECUTE_TRANSACTION);
 
-  // 上架
+  /** 上架
+   *
+   * @param input
+   * @returns
+   */
   function createListingFetch(input: IListingCreateRequest) {
     return _createListing({
       variables: {
@@ -76,7 +97,11 @@ export function useFetchGraphQL() {
       },
     });
   }
-  // 下架
+  /** 下架
+   *
+   * @param id listing id
+   * @returns
+   */
   function removeListingFetch(id: string) {
     return _deactivateListing({
       variables: {
@@ -84,9 +109,20 @@ export function useFetchGraphQL() {
       },
     });
   }
+  /** 执行交易
+   *
+   */
+  function executeTransaction(input: ITransactionCreateRequest) {
+    return _executeTransaction({
+      variables: {
+        input,
+      },
+    });
+  }
 
   return {
     createListingFetch,
-    removeListingFetch
+    removeListingFetch,
+    executeTransaction
   };
 }
