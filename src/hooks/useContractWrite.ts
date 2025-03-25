@@ -267,14 +267,13 @@ export const useContractFunctions = () => {
    * @param tokenId
    * @returns
    */
-  const buyNFT = async (to: Address, tokenId: number, price: number) => {
-
+  const buyNFT = async (tokenId: number, price: number) => {
     return writeContractWithPromise({
       address: CONTRACT_ADDRESS,
       abi: mahjongNFTAbi.abi,
-      functionName: "transferWithFee",
-      args: [to, tokenId, parseEther(price.toString())],
-      value: parseEther('1'),
+      functionName: "buyNFT",
+      args: [tokenId],
+      value: parseEther(price.toString()),
     });
   };
 

@@ -27,6 +27,13 @@ const mahjongNFTAbi = {
     },
     {
       type: "function",
+      name: "buyNFT",
+      inputs: [{ name: "tokenId", type: "uint256", internalType: "uint256" }],
+      outputs: [],
+      stateMutability: "payable",
+    },
+    {
+      type: "function",
       name: "getApproved",
       inputs: [{ name: "tokenId", type: "uint256", internalType: "uint256" }],
       outputs: [{ name: "", type: "address", internalType: "address" }],
@@ -122,6 +129,13 @@ const mahjongNFTAbi = {
       name: "name",
       inputs: [],
       outputs: [{ name: "", type: "string", internalType: "string" }],
+      stateMutability: "view",
+    },
+    {
+      type: "function",
+      name: "nftPrices",
+      inputs: [{ name: "", type: "uint256", internalType: "uint256" }],
+      outputs: [{ name: "", type: "uint256", internalType: "uint256" }],
       stateMutability: "view",
     },
     {
