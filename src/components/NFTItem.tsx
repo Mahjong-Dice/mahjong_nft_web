@@ -23,7 +23,14 @@ function NFTItem({ nft }: { nft: INFTResponse }) {
           />
         );
       } else {
-        return <BuyNFTListing nftId={nft.tokenId} fromAddress={nft.owner} price={nft.listing.price}/>;
+        return (
+          <BuyNFTListing
+            tokenId={nft.tokenId}
+            nftId={nft.id}
+            fromAddress={nft.owner}
+            price={nft.listing.price}
+          />
+        );
       }
     } else {
       if (isOwner) {

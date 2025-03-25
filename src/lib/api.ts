@@ -69,7 +69,7 @@ export const DEACTIVATE_LISTING = gql`
 `;
 export const EXECUTE_TRANSACTION = gql`
   mutation ExecuteTransaction($input: TransactionInput!) {
-    listings(input: $input) {
+    executeTransaction(input: $input) {
       id
       nftId
       fromAddress

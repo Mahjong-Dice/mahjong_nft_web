@@ -5,11 +5,14 @@ import { useContractFunctions } from "@/hooks/useContractWrite";
 import { useAccount } from "wagmi";
 import { ITransactionCreateRequest } from "@/styles/grahpQL";
 
-type BuyNFTListingProps = Omit<ITransactionCreateRequest, "toAddress">;
+type BuyNFTListingProps = Omit<ITransactionCreateRequest, "toAddress"> & {
+  tokenId: string;
+};
 
 function BuyNFTListing({
-  nftId: tokenId,
+  nftId,
   price,
+  tokenId,
   fromAddress,
 }: BuyNFTListingProps) {
   const { address: toAddress } = useAccount();
@@ -18,13 +21,13 @@ function BuyNFTListing({
 
   const handleBuy = async () => {
     try {
-      console.log("buy", tokenId, toAddress, price);
       if (!toAddress) return;
+      console.log("toAddress", nftId, price, tokenId, fromAddress);
       await buyNFT(+tokenId, price);
-      const result = executeTransaction({
+      const result = await executeTransaction({
         toAddress,
-        fromAddress: toAddress,
-        nftId: tokenId.toString(),
+        fromAddress,
+        nftId,
         price,
       });
       console.log("result", result);

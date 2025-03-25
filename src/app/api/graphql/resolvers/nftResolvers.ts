@@ -132,18 +132,31 @@ export const resolvers = {
     executeTransaction: async (
       _: any,
       {
-        nftId,
-        fromAddress,
-        toAddress,
-        price,
+        input,
       }: {
-        nftId: string;
-        fromAddress: string;
-        toAddress: string;
-        price: number;
+        input: {
+          nftId: string;
+          fromAddress: string;
+          toAddress: string;
+          price: number;
+        };
       }
     ) => {
       try {
+        console.log("Transaction params:", input);
+        // 添加参数验证
+        if (!input || !input.nftId) {
+          throw new Error("NFT ID is required");
+        }
+
+        const { nftId, fromAddress, toAddress, price } = input;
+        console.log("Transaction params:", {
+          nftId,
+          fromAddress,
+          toAddress,
+          price,
+        });
+
         return await prisma.$transaction(
           async (tx) => {
             // 1. 验证 NFT 存在性和所有权
