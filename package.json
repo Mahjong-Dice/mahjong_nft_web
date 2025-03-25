@@ -1,6 +1,7 @@
 {
   "name": "nft_web",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "date": "2025-3-25",
   "private": true,
   "type": "module",
   "scripts": {

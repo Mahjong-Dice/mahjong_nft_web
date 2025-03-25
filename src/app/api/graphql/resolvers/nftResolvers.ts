@@ -150,12 +150,6 @@ export const resolvers = {
         }
 
         const { nftId, fromAddress, toAddress, price } = input;
-        console.log("Transaction params:", {
-          nftId,
-          fromAddress,
-          toAddress,
-          price,
-        });
 
         return await prisma.$transaction(
           async (tx) => {
