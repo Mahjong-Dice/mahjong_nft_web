@@ -1,6 +1,26 @@
 
 # 该项目是一个简易NFT交易所项目, 用于学习和练习
 
+## 配置
+```sh
+# .env
+# 填入数据库相关信息
+DATABASE_URL="postgresql://root:123456@localhost:5432/postgres?schema=public"
+
+
+# .env.development
+# 是否开启测试链
+NEXT_PUBLIC_ENABLE_TESTNETS=true
+# IPFS
+NEXT_PUBLIC_IPFS_API_URL=http://localhost:5001/api/v0
+NEXT_PUBLIC_IPFS_Gateway=http://localhost:8080/ipfs
+
+# 合约地址
+# NEXT_PUBLIC_CONTRACT_ADDRESS=0x123456... 
+# graphQL URL，app api router
+NEXT_PUBLIC_GRAPHQL_URL=http://localhost:4322/api/graphql
+```
+
 ## 项目技术栈
 ### 前端方面
 1. Next.js 
